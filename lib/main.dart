@@ -3,7 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:workout_player/shared/material-circle-button.dart';
 
-void main() => runApp(MyApp());
+import 'ioc-manager.dart';
+import 'model/chrono.dart';
+import 'model/repository.dart';
+
+void main() {
+  IoCManager.setup();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -26,6 +33,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Repository _repository;
+
   static const double _timersContainerHeightOpened = 500;
   static const double _timersContainerHeightClosed = 90;
   double _timersContainerHeight = _timersContainerHeightClosed;
@@ -33,6 +42,38 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isListTimersVisible = false;
   String _openCloseLabel = 'open';
   IconData _openCloseIcon = Icons.keyboard_arrow_up;
+
+  _MyHomePageState() {
+    _repository = IoCManager.ioc.get<Repository>();
+    _repository.addChrono(
+        new Chrono(name: 'Program 1, part 1', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 1, part 2', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 1, part 3', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 2, part 1', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 2, part 2', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 2, part 3', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 2, part 1', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 3, part 2', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 45));
+    _repository.addChrono(
+        new Chrono(name: 'Program 3, part 3', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Recovery', minutes: 12, seconds: 0));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,36 +138,51 @@ class _MyHomePageState extends State<MyHomePage> {
                     duration: Duration(milliseconds: 500),
                     curve: Curves.easeOut,
                     alignment: Alignment.bottomCenter,
-                    padding: EdgeInsets.only(bottom: 0, left: 20, right: 20),
+                    padding: EdgeInsets.all(0),
                     child: Column(children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text('Next: Recovery (00:45)',
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white)),
-                          FlatButton.icon(
-                              icon: Icon(_openCloseIcon, color: Colors.white),
-                              label: Text(_openCloseLabel,
-                                  style: TextStyle(color: Colors.white)),
-                              onPressed: () {
-                                _openTimersList();
-                              })
-                        ],
-                      ),
+                      Container(
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Next: Recovery (00:45)',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white)),
+                              FlatButton.icon(
+                                  icon:
+                                      Icon(_openCloseIcon, color: Colors.white),
+                                  label: Text(_openCloseLabel,
+                                      style: TextStyle(color: Colors.white)),
+                                  onPressed: () {
+                                    _openTimersList();
+                                  })
+                            ],
+                          )),
                       Visibility(
                         visible: _isListTimersVisible,
                         child: Expanded(
-                            child: Container(
-                                color: Colors.red,
-                                child: Text('list of timers'))),
+                            child: ListView.builder(
+                          padding: const EdgeInsets.all(0),
+                          itemCount: _repository.chronoLength,
+                          itemBuilder: _listViewItemWidget,
+                          // separatorBuilder: (BuildContext context, int index) =>
+                          //     const Divider(),
+                        )),
                       ),
                     ])),
               ],
             ),
           ],
         ));
+  }
+
+  Widget _listViewItemWidget(BuildContext context, int index) {
+    return Container(
+        height: 50,
+        child: Center(
+            child: Text(_repository.getChrono(index).toString(),
+                style: TextStyle(color: Colors.white))));
   }
 
   void _openTimersList() {
