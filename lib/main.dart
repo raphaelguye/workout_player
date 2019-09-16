@@ -178,11 +178,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _listViewItemWidget(BuildContext context, int index) {
-    return Container(
-        height: 50,
-        child: Center(
-            child: Text(_repository.getChrono(index).toString(),
-                style: TextStyle(color: Colors.white))));
+    return GestureDetector(
+        onTap: () {
+          // setState(() {
+          //   _workoutBloc.selectedChrono =
+          //       widget.repository.getChrono(index);
+          // });
+          print('item $index selected');
+        },
+        child: Container(
+            color: Colors.teal[800],
+            height: 50,
+            child: Center(
+                child: Text(_repository.getChrono(index).toString(),
+                    style: TextStyle(color: Colors.white)))));
   }
 
   void _openTimersList() {
