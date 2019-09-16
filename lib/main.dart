@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:workout_player/shared/material-circle-button.dart';
 
+import 'bloc/workout-bloc.dart';
 import 'ioc-manager.dart';
 import 'model/chrono.dart';
 import 'model/repository.dart';
@@ -34,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Repository _repository;
+  WorkoutBloc _workoutBloc;
 
   static const double _timersContainerHeightOpened = 500;
   static const double _timersContainerHeightClosed = 90;
@@ -73,6 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
         new Chrono(name: 'Program 3, part 3', minutes: 0, seconds: 30));
     _repository
         .addChrono(new Chrono(name: 'Recovery', minutes: 12, seconds: 0));
+
+    _workoutBloc = new WorkoutBloc(_repository);
+    _workoutBloc.selectedChrono = _repository.getChrono(0);
   }
 
   @override
@@ -165,9 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: ListView.builder(
                           padding: const EdgeInsets.all(0),
                           itemCount: _repository.chronoLength,
-                          itemBuilder: _listViewItemWidget,
-                          // separatorBuilder: (BuildContext context, int index) =>
-                          //     const Divider(),
+                          itemBuilder: _listViewItemBuilder,
                         )),
                       ),
                     ])),
@@ -177,21 +180,33 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  Widget _listViewItemWidget(BuildContext context, int index) {
+  GestureDetector _listViewItemBuilder(BuildContext context, int index) {
     return GestureDetector(
         onTap: () {
-          // setState(() {
-          //   _workoutBloc.selectedChrono =
-          //       widget.repository.getChrono(index);
-          // });
           print('item $index selected');
+          setState(() {
+            _workoutBloc.selectedChrono = _repository.getChrono(index);
+          });
         },
-        child: Container(
-            color: Colors.teal[800],
-            height: 50,
-            child: Center(
-                child: Text(_repository.getChrono(index).toString(),
-                    style: TextStyle(color: Colors.white)))));
+        child: _listViewItemBuilderChild(index));
+  }
+
+  StreamBuilder _listViewItemBuilderChild(int index) {
+    return new StreamBuilder(
+        stream: _workoutBloc.chronoRunningObservable,
+        builder: (context, AsyncSnapshot<dynamic> snapshot) {
+          Color itemColor = Colors.teal[800];
+          Chrono selectedChrono = snapshot.data;
+          if (selectedChrono == _repository.getChrono(index)) {
+            itemColor = Colors.teal[600];
+          }
+          return new Container(
+              color: itemColor,
+              height: 50,
+              child: Center(
+                  child: Text(_repository.getChrono(index).toString(),
+                      style: TextStyle(color: Colors.white))));
+        });
   }
 
   void _openTimersList() {
