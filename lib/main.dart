@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
+        secondaryHeaderColor: Colors.white
       ),
       home: MyHomePage(),
     );
@@ -93,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Expanded(
                     child: Container(
-                  color: Colors.teal[200],
+                  color: (Theme.of(context).primaryColor as MaterialColor)[200],
                   child: Align(
                     alignment: Alignment.center,
                     child: const Text(
@@ -104,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )),
                 Expanded(
                   child: Container(
-                    color: Colors.teal[400],
+                    color: (Theme.of(context).primaryColor as MaterialColor)[400],
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         // LinearProgressIndicator(),
                         Text(
                           'Serie 1 part 1',
-                          style: TextStyle(fontSize: 30, color: Colors.white),
+                          style: TextStyle(fontSize: 30, color: Theme.of(context).secondaryHeaderColor),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -138,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 AnimatedContainer(
-                    color: Colors.teal[800],
+                    color: (Theme.of(context).primaryColor as MaterialColor)[800],
                     height: _timersContainerHeight,
                     duration: Duration(milliseconds: 500),
                     curve: Curves.easeOut,
@@ -153,12 +154,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: <Widget>[
                               Text('Next: Recovery (00:45)',
                                   style: TextStyle(
-                                      fontSize: 18, color: Colors.white)),
+                                      fontSize: 18, color: Theme.of(context).secondaryHeaderColor)),
                               FlatButton.icon(
                                   icon:
-                                      Icon(_openCloseIcon, color: Colors.white),
+                                      Icon(_openCloseIcon, color: Theme.of(context).secondaryHeaderColor),
                                   label: Text(_openCloseLabel,
-                                      style: TextStyle(color: Colors.white)),
+                                      style: TextStyle(color: Theme.of(context).secondaryHeaderColor)),
                                   onPressed: () {
                                     _openTimersList();
                                   })
@@ -195,17 +196,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return new StreamBuilder(
         stream: _workoutBloc.chronoRunningObservable,
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          Color itemColor = Colors.teal[800];
+          Color itemColor = (Theme.of(context).primaryColor as MaterialColor)[800];
           Chrono selectedChrono = snapshot.data;
           if (selectedChrono == _repository.getChrono(index)) {
-            itemColor = Colors.teal[600];
+            itemColor = (Theme.of(context).primaryColor as MaterialColor)[600];
           }
           return new Container(
               color: itemColor,
               height: 50,
               child: Center(
                   child: Text(_repository.getChrono(index).toString(),
-                      style: TextStyle(color: Colors.white))));
+                      style: TextStyle(color: Theme.of(context).secondaryHeaderColor))));
         });
   }
 
