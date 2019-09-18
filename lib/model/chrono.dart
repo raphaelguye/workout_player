@@ -27,8 +27,10 @@ class Chrono {
   }
 
   @override
-  String toString() =>
-      "$name - ${this._formatter.format(minutes)}:${this._formatter.format(seconds)}";
+  String toString() => "$name - $hoursMinutesFormatted";
+
+  String get hoursMinutesFormatted =>
+      "${this._formatter.format(minutes)}:${this._formatter.format(seconds)}";
 
   Chrono clone() => new Chrono(name: name, minutes: minutes, seconds: seconds);
 }

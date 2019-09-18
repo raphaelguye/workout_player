@@ -7,32 +7,49 @@ class WorkoutBloc {
   final Repository _repository;
   Chrono _originalChrono;
   Chrono _chrono;
-  bool isTimerRunning = false;
-  BehaviorSubject<Chrono> _subjectTimer;
-  BehaviorSubject<Chrono> _chronoRunning;
+  bool _isChronoRunning = false;
+  BehaviorSubject<Chrono> _currentChronoSubject;
+  BehaviorSubject<Chrono> _selectedChronoSubject;
+  BehaviorSubject<bool> _isChronoRunningSubject;
 
   WorkoutBloc(this._repository) {
-    _subjectTimer = new BehaviorSubject<Chrono>.seeded(this._chrono);
-    _chronoRunning = new BehaviorSubject<Chrono>.seeded(this._originalChrono);
+    _currentChronoSubject = new BehaviorSubject<Chrono>.seeded(this._chrono);
+    _selectedChronoSubject =
+        new BehaviorSubject<Chrono>.seeded(this._originalChrono);
+    _isChronoRunningSubject =
+        new BehaviorSubject<bool>.seeded(this._isChronoRunning);
   }
 
-  Observable<Chrono> get timerObservable => _subjectTimer.stream;
-  Observable<Chrono> get chronoRunningObservable => _chronoRunning.stream;
+  Observable<Chrono> get currentChronoObservable =>
+      _currentChronoSubject.stream;
+  Observable<Chrono> get selectedChronoObservable =>
+      _selectedChronoSubject.stream;
+  Observable<bool> get isChronoRunningObservable =>
+      _isChronoRunningSubject.stream;
+
+  get isChronoRunning => _isChronoRunning;
+  set isChronoRunning(bool value) {
+    _isChronoRunning = value;
+    _isChronoRunningSubject.sink.add(value);
+  }
 
   set selectedChrono(Chrono chrono) {
+    if (chrono == null) {
+      return;
+    }
     _originalChrono = chrono; // We use it as the reference
     _chrono = chrono.clone(); // We will decrease this one
-    _subjectTimer.sink.add(chrono);
-    _chronoRunning.sink.add(_originalChrono);
+    _currentChronoSubject.sink.add(chrono);
+    _selectedChronoSubject.sink.add(_originalChrono);
   }
 
-  Future<void> startTimer() async {
-    isTimerRunning = true;
-    while (!_chrono.isOver && isTimerRunning) {
+  Future<void> startChrono() async {
+    isChronoRunning = true;
+    while (!_chrono.isOver && isChronoRunning) {
       await Future.delayed(Duration(seconds: 1));
-      if (isTimerRunning) {
+      if (isChronoRunning) {
         _chrono.decrease();
-        _subjectTimer.sink.add(_chrono);
+        _currentChronoSubject.sink.add(_chrono);
 
         if (_chrono.isOver) {
           var newChrono = _repository.nextChrono(_originalChrono);
@@ -42,15 +59,20 @@ class WorkoutBloc {
         }
       }
     }
-    isTimerRunning = false;
+    isChronoRunning = false;
   }
 
-  void pauseTimer() {
-    isTimerRunning = false;
+  void pauseChrono() {
+    isChronoRunning = false;
+  }
+
+  void reset() {
+    selectedChrono = _originalChrono;
   }
 
   void dispose() {
-    _subjectTimer.close();
-    _chronoRunning.close();
+    _currentChronoSubject.close();
+    _selectedChronoSubject.close();
+    _isChronoRunningSubject.close();
   }
 }
