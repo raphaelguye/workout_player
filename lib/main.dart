@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _openCloseLabel = 'open';
   IconData _openCloseIcon = Icons.keyboard_arrow_up;
   bool _visible = true;
+  double _openPanelStartingPositionY;
 
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
@@ -176,76 +177,117 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                AnimatedContainer(
-                    color:
-                        (Theme.of(context).primaryColor as MaterialColor)[800],
-                    height: _timersContainerHeight,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                    alignment: Alignment.bottomCenter,
-                    padding: EdgeInsets.all(0),
-                    child: Column(children: <Widget>[
-                      Container(
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              StreamBuilder(
-                                  stream: _workoutBloc.selectedChronoObservable,
-                                  builder: (context,
-                                      AsyncSnapshot<dynamic> snapshot) {
-                                    // setState(() {
-                                    _visible = !_visible;
-                                    _visible = !_visible;
-                                    // _visible = true;
-                                    // });
+                GestureDetector(
+                    onVerticalDragUpdate: onOpeningPanel,
+                    onVerticalDragEnd: onEndingToOpenPanel,
+                    child: AnimatedContainer(
+                        color: (Theme.of(context).primaryColor
+                            as MaterialColor)[800],
+                        height: _timersContainerHeight,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeOut,
+                        alignment: Alignment.bottomCenter,
+                        padding: EdgeInsets.all(0),
+                        child: Column(children: <Widget>[
+                          Container(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  StreamBuilder(
+                                      stream:
+                                          _workoutBloc.selectedChronoObservable,
+                                      builder: (context,
+                                          AsyncSnapshot<dynamic> snapshot) {
+                                        // setState(() {
+                                        _visible = !_visible;
+                                        _visible = !_visible;
+                                        // _visible = true;
+                                        // });
 
-                                    var selectedChrono = snapshot.data;
-                                    var textStyle = TextStyle(
-                                        fontSize: 16, color: Colors.white);
+                                        var selectedChrono = snapshot.data;
+                                        var textStyle = TextStyle(
+                                            fontSize: 16, color: Colors.white);
 
-                                    if (selectedChrono == null) {
-                                      return new Text('Select the next step...',
-                                          style: textStyle);
-                                    }
+                                        if (selectedChrono == null) {
+                                          return new Text(
+                                              'Select the next step...',
+                                              style: textStyle);
+                                        }
 
-                                    if (selectedChrono != null) {
-                                      var nextChrono = _repository
-                                          .nextChrono(selectedChrono);
+                                        if (selectedChrono != null) {
+                                          var nextChrono = _repository
+                                              .nextChrono(selectedChrono);
 
-                                      if (nextChrono != null) {
-                                        return new Text(
-                                            'Next: ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})',
-                                            style: textStyle);
-                                      }
-                                    }
-                                    return new Text('');
-                                  }),
-                              FlatButton.icon(
-                                  icon:
-                                      Icon(_openCloseIcon, color: Colors.white),
-                                  label: Text(_openCloseLabel,
-                                      style: TextStyle(color: Colors.white)),
-                                  onPressed: () {
-                                    _openTimersList();
-                                  })
-                            ],
-                          )),
-                      Visibility(
-                        visible: _isListTimersVisible,
-                        child: Expanded(
-                            child: ListView.builder(
-                          padding: const EdgeInsets.all(0),
-                          itemCount: _repository.chronoLength,
-                          itemBuilder: _listViewItemBuilder,
-                        )),
-                      ),
-                    ])),
+                                          if (nextChrono != null) {
+                                            return new Text(
+                                                'Next: ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})',
+                                                style: textStyle);
+                                          }
+                                        }
+                                        return new Text('');
+                                      }),
+                                  FlatButton.icon(
+                                      icon: Icon(_openCloseIcon,
+                                          color: Colors.white),
+                                      label: Text(_openCloseLabel,
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      onPressed: () {
+                                        _openTimersList();
+                                      })
+                                ],
+                              )),
+                          Visibility(
+                            visible: _isListTimersVisible,
+                            child: Expanded(
+                                child: ListView.builder(
+                              padding: const EdgeInsets.all(0),
+                              itemCount: _repository.chronoLength,
+                              itemBuilder: _listViewItemBuilder,
+                            )),
+                          ),
+                        ]))),
               ],
             ),
           ],
         ));
+  }
+
+  void onOpeningPanel(DragUpdateDetails dragUpdateDetails) {
+    double delta = dragUpdateDetails.delta.dy * -1;
+    double newHeight = delta + _timersContainerHeight;
+    if (newHeight > _timersContainerHeightOpened) {
+      newHeight = _timersContainerHeightOpened;
+    }
+    if (newHeight < _timersContainerHeightClosed) {
+      newHeight = _timersContainerHeightClosed;
+    }
+
+    if (newHeight != _timersContainerHeight) {
+      setState(() {
+        _timersContainerHeight = newHeight;
+
+        _isListTimersVisible =
+            _timersContainerHeight > _timersContainerHeightClosed
+                ? true
+                : false;
+      });
+    }
+  }
+
+  void onEndingToOpenPanel(DragEndDetails dragEndDetails) {
+    setState(() {
+      _timersContainerHeight =
+          _timersContainerHeight > _timersContainerHeightOpened / 2
+              ? _timersContainerHeightOpened
+              : _timersContainerHeightClosed;
+
+      _isListTimersVisible =
+          _timersContainerHeight > _timersContainerHeightClosed ? true : false;
+    });
   }
 
   GestureDetector _listViewItemBuilder(BuildContext context, int index) {
