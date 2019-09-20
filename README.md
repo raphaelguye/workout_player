@@ -1,3 +1,3 @@
-# workout_player
+# Workout Player
 
 A mobile application implemented with Flutter.
