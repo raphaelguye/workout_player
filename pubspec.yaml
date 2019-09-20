@@ -24,6 +24,7 @@ dependencies:
   intl: ">=0.14.0"
   rxdart: ^ 0.22.1
   get_it: ^2.0.3
+  screen: ^0.0.5
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
+import 'package:screen/screen.dart';
 import 'package:workout_player/model/chrono.dart';
 import 'package:workout_player/model/repository.dart';
 
@@ -44,6 +45,7 @@ class WorkoutBloc {
   }
 
   Future<void> startChrono() async {
+    Screen.keepOn(true);
     isChronoRunning = true;
     while (!_chrono.isOver && isChronoRunning) {
       await Future.delayed(Duration(seconds: 1));
@@ -60,10 +62,12 @@ class WorkoutBloc {
       }
     }
     isChronoRunning = false;
+    Screen.keepOn(false);
   }
 
   void pauseChrono() {
     isChronoRunning = false;
+    Screen.keepOn(false);
   }
 
   void reset() {

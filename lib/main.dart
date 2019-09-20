@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.teal),
+      theme: ThemeData(primarySwatch: Colors.indigo),
       home: MyHomePage(),
     );
   }
@@ -32,47 +32,53 @@ class _MyHomePageState extends State<MyHomePage> {
   Repository _repository;
   WorkoutBloc _workoutBloc;
 
-  static const double _timersContainerHeightOpened = 500;
+  static double _timersContainerHeightOpened;
   static const double _timersContainerHeightClosed = 90;
   static const double _buttonsSizeBig = 70;
   double _timersContainerHeight = _timersContainerHeightClosed;
   bool _isTimersContainerOpened = false;
   bool _isListTimersVisible = false;
-  String _openCloseLabel = 'open';
   IconData _openCloseIcon = Icons.keyboard_arrow_up;
   bool _visible = true;
-  double _openPanelStartingPositionY;
 
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
     _repository.addChrono(
-        new Chrono(name: 'Program 1, part 1', minutes: 0, seconds: 2));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 2));
+        new Chrono(name: 'Programme 1 - partie 1', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 1, part 2', minutes: 0, seconds: 7));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 1));
+        new Chrono(name: 'Programme 1 - partie 2', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 1, part 3', minutes: 0, seconds: 1));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 1));
+        new Chrono(name: 'Programme 1 - partie 3', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 2, part 1', minutes: 0, seconds: 1));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 1));
+        new Chrono(name: 'Programme 2 - partie 1', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 2, part 2', minutes: 0, seconds: 1));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 1));
+        new Chrono(name: 'Programme 2 - partie 2', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 2, part 3', minutes: 0, seconds: 1));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 1));
+        new Chrono(name: 'Programme 2 - partie 3', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 2, part 1', minutes: 0, seconds: 1));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 1));
+        new Chrono(name: 'Programme 3 - partie 1', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 3, part 2', minutes: 0, seconds: 1));
-    _repository.addChrono(new Chrono(name: 'Rest', minutes: 0, seconds: 1));
+        new Chrono(name: 'Programme 3 - partie 2', minutes: 0, seconds: 30));
+    _repository
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Program 3, part 3', minutes: 0, seconds: 1));
-    // _repository
-    //     .addChrono(new Chrono(name: 'Recovery', minutes: 12, seconds: 0));
+        new Chrono(name: 'Programme 3 - partie 3', minutes: 0, seconds: 30));
+    _repository.addChrono(
+        new Chrono(name: 'Récupération longue', minutes: 12, seconds: 0));
 
     _workoutBloc = new WorkoutBloc(_repository);
     _workoutBloc.selectedChrono = _repository.getChrono(0);
@@ -80,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _timersContainerHeightOpened = MediaQuery.of(context).size.height / 2.2;
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Workout Player'),
@@ -209,11 +217,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                         var selectedChrono = snapshot.data;
                                         var textStyle = TextStyle(
-                                            fontSize: 16, color: Colors.white);
+                                            fontSize: 14, color: Colors.white);
 
                                         if (selectedChrono == null) {
                                           return new Text(
-                                              'Select the next step...',
+                                              'Sélectionnez la suite...',
                                               style: textStyle);
                                         }
 
@@ -223,21 +231,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                           if (nextChrono != null) {
                                             return new Text(
-                                                'Next: ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})',
+                                                'A suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})',
                                                 style: textStyle);
                                           }
                                         }
                                         return new Text('');
                                       }),
-                                  FlatButton.icon(
-                                      icon: Icon(_openCloseIcon,
-                                          color: Colors.white),
-                                      label: Text(_openCloseLabel,
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      onPressed: () {
-                                        _openTimersList();
-                                      })
+                                  MaterialCircleButton(
+                                    buttonDiameter: 40,
+                                    color: (Theme.of(context).primaryColor
+                                        as MaterialColor)[800],
+                                    iconColor: Colors.white,
+                                    icon: _openCloseIcon,
+                                    onTap: _openTimersList,
+                                    isDisabled: false,
+                                  ),
                                 ],
                               )),
                           Visibility(
@@ -285,6 +293,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ? _timersContainerHeightOpened
               : _timersContainerHeightClosed;
 
+      _openCloseIcon = _timersContainerHeight > _timersContainerHeightClosed
+          ? Icons.keyboard_arrow_down
+          : Icons.keyboard_arrow_up;
+
       _isListTimersVisible =
           _timersContainerHeight > _timersContainerHeightClosed ? true : false;
     });
@@ -327,12 +339,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_isTimersContainerOpened) {
         _isListTimersVisible = true;
         _timersContainerHeight = _timersContainerHeightOpened;
-        _openCloseLabel = 'close';
         _openCloseIcon = Icons.keyboard_arrow_down;
       } else {
         _isListTimersVisible = false;
         _timersContainerHeight = _timersContainerHeightClosed;
-        _openCloseLabel = 'open';
         _openCloseIcon = Icons.keyboard_arrow_up;
       }
     });
