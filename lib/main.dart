@@ -34,13 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Repository _repository;
   WorkoutBloc _workoutBloc;
 
-  static double _timersContainerHeightOpened;
-  static const double _timersContainerHeightClosed = 90;
   static const double _buttonsSizeBig = 70;
-  double _timersContainerHeight = _timersContainerHeightClosed;
-  bool _isTimersContainerOpened = false;
-  bool _isListTimersVisible = false;
-  IconData _openCloseIcon = Icons.keyboard_arrow_up;
 
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
@@ -87,8 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _timersContainerHeightOpened = MediaQuery.of(context).size.height / 2.2;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Workout Player'),
@@ -101,77 +93,123 @@ class _MyHomePageState extends State<MyHomePage> {
                 new ChronoViewer(workoutBloc: _workoutBloc),
                 new ChronoCommander(
                     workoutBloc: _workoutBloc, buttonsSizeBig: _buttonsSizeBig),
-                GestureDetector(
-                    onVerticalDragUpdate: onOpeningPanel,
-                    onVerticalDragEnd: onEndingToOpenPanel,
-                    child: AnimatedContainer(
-                        color: (Theme.of(context).primaryColor
-                            as MaterialColor)[800],
-                        height: _timersContainerHeight,
-                        duration: Duration(milliseconds: 500),
-                        curve: Curves.easeOut,
-                        alignment: Alignment.bottomCenter,
-                        padding: EdgeInsets.all(0),
-                        child: Column(children: <Widget>[
-                          Container(
-                              padding: EdgeInsets.only(left: 20, right: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  StreamBuilder(
-                                      stream:
-                                          _workoutBloc.selectedChronoObservable,
-                                      builder: (context,
-                                          AsyncSnapshot<dynamic> snapshot) {
-                                        var selectedChrono = snapshot.data;
-                                        var textStyle = TextStyle(
-                                            fontSize: 14, color: Colors.white);
-
-                                        if (selectedChrono == null) {
-                                          return new Text(
-                                              'Sélectionnez la suite...',
-                                              style: textStyle);
-                                        }
-
-                                        if (selectedChrono != null) {
-                                          var nextChrono = _repository
-                                              .nextChrono(selectedChrono);
-
-                                          if (nextChrono != null) {
-                                            return new Text(
-                                                'A suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})',
-                                                style: textStyle);
-                                          }
-                                        }
-                                        return new Text('');
-                                      }),
-                                  MaterialCircleButton(
-                                    buttonDiameter: 40,
-                                    color: (Theme.of(context).primaryColor
-                                        as MaterialColor)[800],
-                                    iconColor: Colors.white,
-                                    icon: _openCloseIcon,
-                                    onTap: _openTimersList,
-                                    isDisabled: false,
-                                  ),
-                                ],
-                              )),
-                          Visibility(
-                            visible: _isListTimersVisible,
-                            child: Expanded(
-                                child: ListView.builder(
-                              padding: const EdgeInsets.all(0),
-                              itemCount: _repository.chronoLength,
-                              itemBuilder: _listViewItemBuilder,
-                            )),
-                          ),
-                        ]))),
+                new ChronoSelector(
+                  workoutBloc: _workoutBloc,
+                  repository: _repository,
+                  maxHeight: MediaQuery.of(context).size.height / 2.2,
+                ),
               ],
             ),
           ],
         ));
+  }
+}
+
+class ChronoSelector extends StatefulWidget {
+  ChronoSelector(
+      {Key key,
+      @required WorkoutBloc workoutBloc,
+      @required Repository repository,
+      @required double maxHeight})
+      : _workoutBloc = workoutBloc,
+        _repository = repository,
+        _maxHeight = maxHeight,
+        super(key: key);
+
+  final WorkoutBloc _workoutBloc;
+  final Repository _repository;
+  final double _maxHeight;
+
+  @override
+  _ChronoSelectorState createState() => _ChronoSelectorState(
+      workoutBloc: _workoutBloc,
+      repository: _repository,
+      maxHeight: _maxHeight);
+}
+
+class _ChronoSelectorState extends State<MyHomePage> {
+  _ChronoSelectorState(
+      {@required WorkoutBloc workoutBloc,
+      @required Repository repository,
+      @required double maxHeight})
+      : _workoutBloc = workoutBloc,
+        _repository = repository,
+        _timersContainerHeightOpened = maxHeight;
+
+  final WorkoutBloc _workoutBloc;
+  final Repository _repository;
+  final double _timersContainerHeightOpened;
+
+  static const double _timersContainerHeightClosed = 90;
+  double _timersContainerHeight = _timersContainerHeightClosed;
+  bool _isTimersContainerOpened = false;
+  bool _isListTimersVisible = false;
+  IconData _openCloseIcon = Icons.keyboard_arrow_up;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onVerticalDragUpdate: onOpeningPanel,
+        onVerticalDragEnd: onEndingToOpenPanel,
+        child: AnimatedContainer(
+            color: (Theme.of(context).primaryColor as MaterialColor)[800],
+            height: _timersContainerHeight,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeOut,
+            alignment: Alignment.bottomCenter,
+            padding: EdgeInsets.all(0),
+            child: Column(children: <Widget>[
+              Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      StreamBuilder(
+                          stream: _workoutBloc.selectedChronoObservable,
+                          builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                            var selectedChrono = snapshot.data;
+                            var textStyle =
+                                TextStyle(fontSize: 14, color: Colors.white);
+
+                            if (selectedChrono == null) {
+                              return new Text('Sélectionnez la suite...',
+                                  style: textStyle);
+                            }
+
+                            if (selectedChrono != null) {
+                              var nextChrono =
+                                  _repository.nextChrono(selectedChrono);
+
+                              if (nextChrono != null) {
+                                return new Text(
+                                    'A suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})',
+                                    style: textStyle);
+                              }
+                            }
+                            return new Text('');
+                          }),
+                      MaterialCircleButton(
+                        buttonDiameter: 40,
+                        color: (Theme.of(context).primaryColor
+                            as MaterialColor)[800],
+                        iconColor: Colors.white,
+                        icon: _openCloseIcon,
+                        onTap: _openTimersList,
+                        isDisabled: false,
+                      ),
+                    ],
+                  )),
+              Visibility(
+                visible: _isListTimersVisible,
+                child: Expanded(
+                    child: ListView.builder(
+                  padding: const EdgeInsets.all(0),
+                  itemCount: _repository.chronoLength,
+                  itemBuilder: _listViewItemBuilder,
+                )),
+              ),
+            ])));
   }
 
   void onOpeningPanel(DragUpdateDetails dragUpdateDetails) {
