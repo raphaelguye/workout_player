@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workout_player/shared/material-circle-button.dart';
+import 'package:workout_player/widgets/ChronoCommander.dart';
+import 'package:workout_player/widgets/ChronoViewer.dart';
 import 'ioc-manager.dart';
 import 'bloc/workout-bloc.dart';
 import 'model/chrono.dart';
@@ -39,7 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isTimersContainerOpened = false;
   bool _isListTimersVisible = false;
   IconData _openCloseIcon = Icons.keyboard_arrow_up;
-  bool _visible = true;
 
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
@@ -97,94 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
             new Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                    child: Container(
-                  color: (Theme.of(context).primaryColor as MaterialColor)[200],
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: StreamBuilder(
-                          stream: _workoutBloc.currentChronoObservable,
-                          builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                            Chrono currentChrono = snapshot.data;
-                            return currentChrono == null
-                                ? new Text('--:--',
-                                    style: TextStyle(
-                                        fontSize: 70, color: Colors.black))
-                                : Text('${currentChrono.hoursMinutesFormatted}',
-                                    style: TextStyle(
-                                        fontSize: 70,
-                                        color: currentChrono.isOver
-                                            ? Colors.white
-                                            : Colors.black));
-                          })),
-                )),
-                Expanded(
-                  child: Container(
-                    color:
-                        (Theme.of(context).primaryColor as MaterialColor)[400],
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        // LinearProgressIndicator(),
-                        StreamBuilder(
-                            stream: _workoutBloc.currentChronoObservable,
-                            builder:
-                                (context, AsyncSnapshot<dynamic> snapshot) {
-                              return snapshot.data == null
-                                  ? new Text('-',
-                                      style: TextStyle(
-                                          fontSize: 30, color: Colors.white))
-                                  : new Text(
-                                      '${(snapshot.data as Chrono).name}',
-                                      style: TextStyle(
-                                          fontSize: 30, color: Colors.white));
-                            }),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            StreamBuilder(
-                                stream: _workoutBloc.isChronoRunningObservable,
-                                builder:
-                                    (context, AsyncSnapshot<dynamic> snapshot) {
-                                  return MaterialCircleButton(
-                                      icon: Icons.replay,
-                                      buttonDiameter: _buttonsSizeBig,
-                                      color: Colors.white,
-                                      iconColor: Colors.black,
-                                      isDisabled: snapshot.data == true,
-                                      onTap: () => _workoutBloc.reset());
-                                }),
-                            StreamBuilder(
-                                stream: _workoutBloc.isChronoRunningObservable,
-                                builder:
-                                    (context, AsyncSnapshot<dynamic> snapshot) {
-                                  return snapshot.data == true
-                                      ? MaterialCircleButton(
-                                          icon: Icons.pause,
-                                          buttonDiameter: _buttonsSizeBig,
-                                          color: Colors.white,
-                                          iconColor: Colors.black,
-                                          isDisabled: false,
-                                          onTap: () =>
-                                              _workoutBloc.pauseChrono(),
-                                        )
-                                      : MaterialCircleButton(
-                                          icon: Icons.play_arrow,
-                                          buttonDiameter: _buttonsSizeBig,
-                                          color: Colors.white,
-                                          iconColor: Colors.black,
-                                          isDisabled: false,
-                                          onTap: () =>
-                                              _workoutBloc.startChrono(),
-                                        );
-                                }),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                new ChronoViewer(workoutBloc: _workoutBloc),
+                new ChronoCommander(
+                    workoutBloc: _workoutBloc, buttonsSizeBig: _buttonsSizeBig),
                 GestureDetector(
                     onVerticalDragUpdate: onOpeningPanel,
                     onVerticalDragEnd: onEndingToOpenPanel,
@@ -209,12 +125,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                           _workoutBloc.selectedChronoObservable,
                                       builder: (context,
                                           AsyncSnapshot<dynamic> snapshot) {
-                                        // setState(() {
-                                        _visible = !_visible;
-                                        _visible = !_visible;
-                                        // _visible = true;
-                                        // });
-
                                         var selectedChrono = snapshot.data;
                                         var textStyle = TextStyle(
                                             fontSize: 14, color: Colors.white);
