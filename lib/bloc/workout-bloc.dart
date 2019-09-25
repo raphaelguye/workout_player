@@ -54,10 +54,7 @@ class WorkoutBloc {
         _currentChronoSubject.sink.add(_chrono);
 
         if (_chrono.isOver) {
-          var newChrono = _repository.nextChrono(_originalChrono);
-          if (newChrono != null) {
-            selectedChrono = newChrono;
-          }
+          next();
         }
       }
     }
@@ -72,6 +69,16 @@ class WorkoutBloc {
 
   void reset() {
     selectedChrono = _originalChrono;
+  }
+
+  void next() {
+    var newChrono = _repository.nextChrono(_originalChrono);
+    selectedChrono = newChrono;
+  }
+
+  void previous() {
+    var newChrono = _repository.previousChrono(_originalChrono);
+    selectedChrono = newChrono;
   }
 
   void dispose() {
