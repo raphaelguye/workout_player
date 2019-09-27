@@ -6,6 +6,7 @@ abstract class Repository {
   bool removeChrono(Chrono chrono);
   int get chronoLength;
   Chrono nextChrono(Chrono chrono);
+  Chrono previousChrono(Chrono chrono);
 }
 
 class RepositoryImplementation extends Repository {
@@ -47,13 +48,20 @@ class RepositoryImplementation extends Repository {
 
   Chrono nextChrono(Chrono chrono) {
     int numberOfChronosWithANext = chronoLength - 1;
-
     for (var i = 0; i < numberOfChronosWithANext; i++) {
       if (_chronos[i] == chrono) {
-        return _chronos[i + 1]; // OK because we stop to chronoLength - 1
+        return _chronos[i + 1];
       }
     }
+    return null;
+  }
 
+  Chrono previousChrono(Chrono chrono) {
+    for (var i = 1; i < chronoLength; i++) {
+      if (_chronos[i] == chrono) {
+        return _chronos[i - 1];
+      }
+    }
     return null;
   }
 
