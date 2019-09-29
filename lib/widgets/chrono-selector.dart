@@ -70,23 +70,23 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             var selectedChrono = snapshot.data;
                             var textStyle =
                                 TextStyle(fontSize: 14, color: Colors.white);
+                            var title = '';
 
                             if (selectedChrono == null) {
-                              return new Text('Sélectionnez la suite...',
-                                  style: textStyle);
-                            }
-
-                            if (selectedChrono != null) {
+                              title = 'Sélectionnez la suite...';
+                            } else if (_isListTimersVisible) {
+                              title = 'À suivre';
+                              textStyle = TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white);
+                            } else {
                               var nextChrono =
                                   _repository.nextChrono(selectedChrono);
-
-                              if (nextChrono != null) {
-                                return new Text(
-                                    'A suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})',
-                                    style: textStyle);
-                              }
+                              title =
+                                  'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
                             }
-                            return new Text('');
+                            return new Text(title, style: textStyle);
                           }),
                       MaterialCircleButton(
                         buttonDiameter: 40,

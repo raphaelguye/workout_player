@@ -5,15 +5,15 @@ class Chrono {
   final String name;
   int minutes;
   int seconds;
-  bool isOver;
 
   NumberFormat _formatter;
 
   Chrono(
       {@required this.name, @required this.minutes, @required this.seconds}) {
     this._formatter = new NumberFormat("00");
-    this.isOver = false;
   }
+
+  bool get isOver => minutes == 0 && seconds == 0;
 
   void decrease() {
     if (seconds > 0) {
@@ -21,8 +21,6 @@ class Chrono {
     } else if (minutes > 0) {
       minutes--;
       seconds = 59;
-    } else {
-      isOver = true;
     }
   }
 
