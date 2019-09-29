@@ -25,6 +25,7 @@ dependencies:
   rxdart: ^ 0.22.1
   get_it: ^2.0.3
   screen: ^0.0.5
+  vibrate: ^0.0.4
 
 dev_dependencies:
   flutter_test:

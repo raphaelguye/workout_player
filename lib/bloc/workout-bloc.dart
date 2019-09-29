@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:screen/screen.dart';
+import 'package:vibrate/vibrate.dart';
 import 'package:workout_player/model/chrono.dart';
 import 'package:workout_player/model/repository.dart';
 
@@ -12,6 +13,9 @@ class WorkoutBloc {
   BehaviorSubject<Chrono> _currentChronoSubject;
   BehaviorSubject<Chrono> _selectedChronoSubject;
   BehaviorSubject<bool> _isChronoRunningSubject;
+
+  bool isVibrateEnabled = true;
+  bool isAutoPlayEnabled = true;
 
   WorkoutBloc(this._repository) {
     _currentChronoSubject = new BehaviorSubject<Chrono>.seeded(this._chrono);
@@ -54,7 +58,18 @@ class WorkoutBloc {
         _currentChronoSubject.sink.add(_chrono);
 
         if (_chrono.isOver) {
-          next();
+          if (isVibrateEnabled && await Vibrate.canVibrate) {
+            Vibrate.vibrate();
+          }
+
+          if (isAutoPlayEnabled) {
+            await Future.delayed(Duration(
+                seconds: 1)); // Wait 1 sec before starting the next Chrono
+            next();
+          } else {
+            isChronoRunning = false;
+            next(); // Switch directly to the next Chrono without waiting 1 second more
+          }
         }
       }
     }
