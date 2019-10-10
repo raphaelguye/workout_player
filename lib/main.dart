@@ -39,11 +39,11 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
     _repository.addChrono(
-        new Chrono(name: 'Programme 1 - partie 1', minutes: 0, seconds: 5));
+        new Chrono(name: 'Programme 1 - partie 1', minutes: 0, seconds: 30));
     _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 5));
+        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Programme 1 - partie 2', minutes: 0, seconds: 5));
+        new Chrono(name: 'Programme 1 - partie 2', minutes: 0, seconds: 30));
     _repository
         .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
     _repository.addChrono(
