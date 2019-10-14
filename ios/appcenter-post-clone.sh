@@ -6,6 +6,10 @@ set -e
 # debug log
 set -x
 
+sudo gem uninstall cocoapods
+sudo gem install cocoapods -v 1.7.5
+pod setup
+
 cd ..
 git clone -b beta https://github.com/flutter/flutter.git
 export PATH=`pwd`/flutter/bin:$PATH
@@ -15,8 +19,5 @@ flutter doctor
 flutter pub get
 
 echo "Installed flutter to `pwd`/flutter"
-
-pod setup
-echo "pod setup run"
 
 flutter build ios --release --no-codesign
