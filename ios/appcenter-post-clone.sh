@@ -16,4 +16,7 @@ flutter pub get
 
 echo "Installed flutter to `pwd`/flutter"
 
+pod setup
+echo "pod setup run"
+
 flutter build ios --release --no-codesign
