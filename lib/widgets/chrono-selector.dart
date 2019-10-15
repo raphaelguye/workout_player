@@ -112,41 +112,41 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   }
 
   void onOpeningPanel(DragUpdateDetails dragUpdateDetails) {
-    // double delta = dragUpdateDetails.delta.dy * -1;
-    // double newHeight = delta + _timersContainerHeight;
-    // if (newHeight > _timersContainerHeightOpened) {
-    //   newHeight = _timersContainerHeightOpened;
-    // }
-    // if (newHeight < _timersContainerHeightClosed) {
-    //   newHeight = _timersContainerHeightClosed;
-    // }
+    double delta = dragUpdateDetails.delta.dy * -1;
+    double newHeight = delta + _timersContainerHeight;
+    if (newHeight > _timersContainerHeightOpened) {
+      newHeight = _timersContainerHeightOpened;
+    }
+    if (newHeight < _timersContainerHeightClosed) {
+      newHeight = _timersContainerHeightClosed;
+    }
 
-    // if (newHeight != _timersContainerHeight) {
-    //   setState(() {
-    //     _timersContainerHeight = newHeight;
+    if (newHeight != _timersContainerHeight) {
+      setState(() {
+        _timersContainerHeight = newHeight;
 
-    //     _isListTimersVisible =
-    //         _timersContainerHeight > _timersContainerHeightClosed
-    //             ? true
-    //             : false;
-    //   });
-    // }
+        _isListTimersVisible =
+            _timersContainerHeight > _timersContainerHeightClosed
+                ? true
+                : false;
+      });
+    }
   }
 
   void onEndingToOpenPanel(DragEndDetails dragEndDetails) {
-    // setState(() {
-    //   _timersContainerHeight =
-    //       _timersContainerHeight > _timersContainerHeightOpened / 2
-    //           ? _timersContainerHeightOpened
-    //           : _timersContainerHeightClosed;
+    setState(() {
+      _timersContainerHeight =
+          _timersContainerHeight > _timersContainerHeightOpened / 2
+              ? _timersContainerHeightOpened
+              : _timersContainerHeightClosed;
 
-    //   _openCloseIcon = _timersContainerHeight > _timersContainerHeightClosed
-    //       ? Icons.keyboard_arrow_down
-    //       : Icons.keyboard_arrow_up;
+      _openCloseIcon = _timersContainerHeight > _timersContainerHeightClosed
+          ? Icons.keyboard_arrow_down
+          : Icons.keyboard_arrow_up;
 
-    //   _isListTimersVisible =
-    //       _timersContainerHeight > _timersContainerHeightClosed ? true : false;
-    // });
+      _isListTimersVisible =
+          _timersContainerHeight > _timersContainerHeightClosed ? true : false;
+    });
   }
 
   GestureDetector _listViewItemBuilder(BuildContext context, int index) {
