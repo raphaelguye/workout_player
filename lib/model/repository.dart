@@ -5,6 +5,8 @@ abstract class Repository {
   bool addChrono(Chrono chrono);
   bool removeChrono(Chrono chrono);
   int get chronoLength;
+  bool hasNext(Chrono chrono);
+  bool hasPrevious(Chrono chrono);
   Chrono nextChrono(Chrono chrono);
   Chrono previousChrono(Chrono chrono);
 }
@@ -36,15 +38,16 @@ class RepositoryImplementation extends Repository {
   bool removeChrono(Chrono chrono) {
     try {
       if (_chronos.contains(chrono)) {
-        return true;
+        return _chronos.remove(chrono);
       }
-
-      return _chronos.remove(chrono);
     } catch (exception) {
       print(exception);
-      return false;
     }
+    return false;
   }
+
+  bool hasNext(Chrono chrono) => nextChrono(chrono) != null;
+  bool hasPrevious(Chrono chrono) => previousChrono(chrono) != null;
 
   Chrono nextChrono(Chrono chrono) {
     int numberOfChronosWithANext = chronoLength - 1;

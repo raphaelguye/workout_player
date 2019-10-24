@@ -9,6 +9,7 @@ class WorkoutBloc {
   final Repository _repository;
   Chrono _originalChrono;
   Chrono _chrono;
+  Chrono _selectedChrono;
   bool _isChronoRunning = false;
   BehaviorSubject<Chrono> _currentChronoSubject;
   BehaviorSubject<Chrono> _selectedChronoSubject;
@@ -38,20 +39,24 @@ class WorkoutBloc {
     _isChronoRunningSubject.sink.add(value);
   }
 
-  set selectedChrono(Chrono chrono) {
-    if (chrono == null) {
-      return;
-    }
-    _originalChrono = chrono; // We use it as the reference
-    _chrono = chrono.clone(); // We will decrease this one
-    _currentChronoSubject.sink.add(chrono);
+  set selectedChrono(Chrono value) {
+    _originalChrono = value; // We use it as the reference
+    _chrono = value != null ? value.clone() : null; // We will decrease this one
+
+    _currentChronoSubject.sink.add(value);
     _selectedChronoSubject.sink.add(_originalChrono);
+
+    _selectedChrono = value;
   }
 
   Future<void> startChrono() async {
+    if (_chrono == null) {
+      return;
+    }
+
     Screen.keepOn(true);
     isChronoRunning = true;
-    while (!_chrono.isOver && isChronoRunning) {
+    while (_chrono != null && !_chrono.isOver && isChronoRunning) {
       await Future.delayed(Duration(seconds: 1));
       if (isChronoRunning) {
         _chrono.decrease();
@@ -94,6 +99,19 @@ class WorkoutBloc {
   void previous() {
     var newChrono = _repository.previousChrono(_originalChrono);
     selectedChrono = newChrono;
+  }
+
+  void remove(Chrono chrono) {
+    if (_selectedChrono == chrono) {
+      if (_repository.hasNext(chrono)) {
+        next();
+      } else if (_repository.hasPrevious(chrono)) {
+        previous();
+      } else {
+        selectedChrono = null;
+      }
+    }
+    _repository.removeChrono(chrono);
   }
 
   void dispose() {

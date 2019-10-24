@@ -83,19 +83,33 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             } else {
                               var nextChrono =
                                   _repository.nextChrono(selectedChrono);
-                              title =
-                                  'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
+                              title = nextChrono == null
+                                  ? 'Fin de la série'
+                                  : 'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
                             }
                             return new Text(title, style: textStyle);
                           }),
-                      MaterialCircleButton(
-                        buttonDiameter: 40,
-                        color: (Theme.of(context).primaryColor
-                            as MaterialColor)[800],
-                        iconColor: Colors.white,
-                        icon: _openCloseIcon,
-                        onTap: _openTimersList,
-                        isDisabled: false,
+                      Row(
+                        children: <Widget>[
+                          MaterialCircleButton(
+                            buttonDiameter: 40,
+                            color: (Theme.of(context).primaryColor
+                                as MaterialColor)[800],
+                            iconColor: Colors.white,
+                            icon: Icons.add,
+                            onTap: _openNewChronoDialog,
+                            isDisabled: false,
+                          ),
+                          MaterialCircleButton(
+                            buttonDiameter: 40,
+                            color: (Theme.of(context).primaryColor
+                                as MaterialColor)[800],
+                            iconColor: Colors.white,
+                            icon: _openCloseIcon,
+                            onTap: _openTimersList,
+                            isDisabled: false,
+                          )
+                        ],
                       ),
                     ],
                   )),
@@ -149,15 +163,35 @@ class _ChronoSelectorState extends State<ChronoSelector> {
     });
   }
 
-  GestureDetector _listViewItemBuilder(BuildContext context, int index) {
-    return GestureDetector(
-        onTap: () {
-          print('item $index selected');
-          setState(() {
-            _workoutBloc.selectedChrono = _repository.getChrono(index);
-          });
-        },
-        child: _listViewItemBuilderChild(index));
+  Dismissible _listViewItemBuilder(BuildContext context, int index) {
+    final chrono = _repository.getChrono(index);
+
+    // Source: https://flutter.dev/docs/cookbook/gestures/dismissible
+    return Dismissible(
+      key: Key(chrono.hashCode.toString()),
+      onDismissed: (direction) {
+        setState(() {
+          _workoutBloc.remove(chrono);
+        });
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20.0),
+        color: Colors.red,
+        child: Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
+      ),
+      child: GestureDetector(
+          onTap: () {
+            print('item $index selected');
+            setState(() {
+              _workoutBloc.selectedChrono = _repository.getChrono(index);
+            });
+          },
+          child: _listViewItemBuilderChild(index)),
+    );
   }
 
   StreamBuilder _listViewItemBuilderChild(int index) {
@@ -193,5 +227,49 @@ class _ChronoSelectorState extends State<ChronoSelector> {
         _openCloseIcon = Icons.keyboard_arrow_up;
       }
     });
+  }
+
+  Future<void> _openNewChronoDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ajouter un nouveau chrono'),
+          content: SingleChildScrollView(
+              child: Column(children: <Widget>[
+            Container(
+              child: TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Libellé')),
+              padding: EdgeInsets.only(bottom: 8),
+            ),
+            Container(
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Temps'),
+              ),
+              padding: EdgeInsets.only(top: 8),
+            )
+          ])),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                print('Cancel button clicked');
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Add'),
+              onPressed: () {
+                print('Add button clicked');
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
