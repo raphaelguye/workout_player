@@ -9,6 +9,7 @@ abstract class Repository {
   bool hasPrevious(Chrono chrono);
   Chrono nextChrono(Chrono chrono);
   Chrono previousChrono(Chrono chrono);
+  void clear();
 }
 
 class RepositoryImplementation extends Repository {
@@ -44,6 +45,10 @@ class RepositoryImplementation extends Repository {
       print(exception);
     }
     return false;
+  }
+
+  void clear() {
+    _chronos.clear();
   }
 
   bool hasNext(Chrono chrono) => nextChrono(chrono) != null;

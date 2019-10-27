@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workout_player/bloc/workout-bloc.dart';
 import 'package:workout_player/model/chrono.dart';
+import 'package:workout_player/model/profile-loader.dart';
 import 'package:workout_player/model/repository.dart';
 import 'package:workout_player/shared/material-circle-button.dart';
 
@@ -38,12 +39,21 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   final WorkoutBloc _workoutBloc;
   final Repository _repository;
   final double _timersContainerHeightOpened;
+  final _chronoTitleTextController = TextEditingController();
+  final _chronoTimeTextController = TextEditingController();
 
   static const double _timersContainerHeightClosed = 90;
   double _timersContainerHeight = _timersContainerHeightClosed;
   bool _isTimersContainerOpened = false;
   bool _isListTimersVisible = false;
   IconData _openCloseIcon = Icons.keyboard_arrow_up;
+
+  @override
+  void dispose() {
+    _chronoTitleTextController.dispose();
+    _chronoTimeTextController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +101,15 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                           }),
                       Row(
                         children: <Widget>[
+                          MaterialCircleButton(
+                            buttonDiameter: 40,
+                            color: (Theme.of(context).primaryColor
+                                as MaterialColor)[800],
+                            iconColor: Colors.white,
+                            icon: Icons.library_books,
+                            onTap: _openLoadProfileDialog,
+                            isDisabled: false,
+                          ),
                           MaterialCircleButton(
                             buttonDiameter: 40,
                             color: (Theme.of(context).primaryColor
@@ -229,6 +248,40 @@ class _ChronoSelectorState extends State<ChronoSelector> {
     });
   }
 
+  Future<void> _openLoadProfileDialog() async {
+    var profileSelected = await showDialog<Profile>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Sélectionnez un profile à charger'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Profile.rock);
+                },
+                child: const Text("Rock'n'roll séries"),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Profile.fitness);
+                },
+                child: const Text('Fitness répétitions'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, Profile.empty);
+                },
+                child: const Text('Vide'),
+              ),
+            ],
+          );
+        });
+
+    setState(() {
+      _workoutBloc.loadProfile(profileSelected);
+    });
+  }
+
   Future<void> _openNewChronoDialog() async {
     return showDialog<void>(
       context: context,
@@ -240,14 +293,17 @@ class _ChronoSelectorState extends State<ChronoSelector> {
               child: Column(children: <Widget>[
             Container(
               child: TextField(
+                  controller: _chronoTitleTextController,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Libellé')),
+                      border: OutlineInputBorder(), labelText: 'Intitulé')),
               padding: EdgeInsets.only(bottom: 8),
             ),
             Container(
               child: TextField(
+                controller: _chronoTimeTextController,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'Temps'),
+                    border: OutlineInputBorder(),
+                    labelText: "Temps (mm:ss ou ss)"),
               ),
               padding: EdgeInsets.only(top: 8),
             )
@@ -256,14 +312,27 @@ class _ChronoSelectorState extends State<ChronoSelector> {
             FlatButton(
               child: Text('Cancel'),
               onPressed: () {
-                print('Cancel button clicked');
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
               child: Text('Add'),
               onPressed: () {
-                print('Add button clicked');
+                var rawName = _chronoTitleTextController.text;
+                var rawTime = _chronoTimeTextController.text;
+
+                if (rawName != null &&
+                    rawName != "" &&
+                    rawTime != null &&
+                    rawTime != "") {
+                  var newChrono = Chrono.fromRawData(rawName, rawTime);
+                  if (newChrono != null) {
+                    setState(() {
+                      _workoutBloc.addNewChrono(newChrono);
+                    });
+                  }
+                }
+
                 Navigator.of(context).pop();
               },
             ),

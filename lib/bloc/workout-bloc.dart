@@ -3,10 +3,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:screen/screen.dart';
 import 'package:vibrate/vibrate.dart';
 import 'package:workout_player/model/chrono.dart';
+import 'package:workout_player/model/profile-loader.dart';
 import 'package:workout_player/model/repository.dart';
 
 class WorkoutBloc {
   final Repository _repository;
+  final ProfileLoader _profileLoader;
   Chrono _originalChrono;
   Chrono _chrono;
   Chrono _selectedChrono;
@@ -18,7 +20,7 @@ class WorkoutBloc {
   bool isVibrateEnabled = true;
   bool isAutoPlayEnabled = true;
 
-  WorkoutBloc(this._repository) {
+  WorkoutBloc(this._repository, this._profileLoader) {
     _currentChronoSubject = new BehaviorSubject<Chrono>.seeded(this._chrono);
     _selectedChronoSubject =
         new BehaviorSubject<Chrono>.seeded(this._originalChrono);
@@ -112,6 +114,34 @@ class WorkoutBloc {
       }
     }
     _repository.removeChrono(chrono);
+  }
+
+  void addNewChrono(Chrono newChrono) {
+    _repository.addChrono(newChrono);
+
+    if (_selectedChrono == null) {
+      selectedChrono = newChrono;
+    }
+  }
+
+  void loadProfile(Profile profile) {
+    switch (profile) {
+      case Profile.rock:
+        print('rock profile choosen');
+        _profileLoader.loadRockProfile();
+        break;
+      case Profile.fitness:
+        print('fitness profile choosen');
+        _profileLoader.loadFitnessProfile();
+        break;
+      case Profile.empty:
+        print('empty profile choosen');
+        _profileLoader.loadEmptyProfile();
+        break;
+    }
+
+    selectedChrono =
+        _repository.chronoLength > 0 ? _repository.getChrono(0) : null;
   }
 
   void dispose() {

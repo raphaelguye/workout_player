@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_player/model/profile-loader.dart';
 import 'package:workout_player/widgets/chrono-commander.dart';
 import 'package:workout_player/widgets/chrono-selector.dart';
 import 'package:workout_player/widgets/chrono-viewer.dart';
@@ -33,50 +34,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Repository _repository;
   WorkoutBloc _workoutBloc;
+  ProfileLoader _profileLoader;
 
   static const double _buttonsSizeBig = 70;
 
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
-    _repository.addChrono(
-        new Chrono(name: 'Programme 1 - partie 1', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 1 - partie 2', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 1 - partie 3', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 2 - partie 1', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 2 - partie 2', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 2 - partie 3', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 3 - partie 1', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 3 - partie 2', minutes: 0, seconds: 30));
-    _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
-    _repository.addChrono(
-        new Chrono(name: 'Programme 3 - partie 3', minutes: 0, seconds: 30));
-    _repository.addChrono(
-        new Chrono(name: 'Récupération longue', minutes: 12, seconds: 0));
-
-    _workoutBloc = new WorkoutBloc(_repository);
-    _workoutBloc.selectedChrono = _repository.getChrono(0);
+    _profileLoader = IoCManager.ioc.get<ProfileLoader>();
+    _workoutBloc = new WorkoutBloc(_repository, _profileLoader);
   }
 
   @override
@@ -96,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 new ChronoSelector(
                   workoutBloc: _workoutBloc,
                   repository: _repository,
-                  maxHeight: 250,//MediaQuery.of(context).size.height / 2.2,
+                  maxHeight: 250, //MediaQuery.of(context).size.height / 2.2,
                 ),
               ],
             ),
