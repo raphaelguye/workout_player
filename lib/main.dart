@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:workout_player/bloc/workout-bloc.dart';
+import 'package:workout_player/ioc-manager.dart';
 import 'package:workout_player/model/profile-loader.dart';
+import 'package:workout_player/model/repository.dart';
 import 'package:workout_player/widgets/chrono-commander.dart';
 import 'package:workout_player/widgets/chrono-selector.dart';
 import 'package:workout_player/widgets/chrono-viewer.dart';
-import 'ioc-manager.dart';
-import 'bloc/workout-bloc.dart';
-import 'model/chrono.dart';
-import 'model/repository.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   IoCManager.setup();
-  runApp(MyApp());
+  runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
