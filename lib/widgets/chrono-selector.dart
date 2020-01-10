@@ -269,6 +269,12 @@ class _ChronoSelectorState extends State<ChronoSelector> {
               ),
               SimpleDialogOption(
                 onPressed: () {
+                  Navigator.pop(context, Profile.extensivePhase);
+                },
+                child: const Text('Renforcement phase extensive'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
                   Navigator.pop(context, Profile.empty);
                 },
                 child: const Text('Vide'),

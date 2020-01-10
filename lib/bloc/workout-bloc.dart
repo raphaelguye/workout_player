@@ -134,6 +134,10 @@ class WorkoutBloc {
         print('fitness profile choosen');
         _profileLoader.loadFitnessProfile();
         break;
+      case Profile.extensivePhase:
+        print('extensive phase profile choosen');
+        _profileLoader.loadExtensivePhaseProfile();
+        break;
       case Profile.empty:
         print('empty profile choosen');
         _profileLoader.loadEmptyProfile();
