@@ -6,13 +6,13 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `Flutter`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - vibrate (from `.symlinks/plugins/vibrate/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: Flutter
   screen:
     :path: ".symlinks/plugins/screen/ios"
   vibrate:
@@ -23,6 +23,6 @@ SPEC CHECKSUMS:
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   vibrate: 967ba16b8bd87d2fa3646472bb10429f1927c32f
 
-PODFILE CHECKSUM: 10ae9c18d12c9ffc2275c9a159a3b1e281990db0
+PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
 
 COCOAPODS: 1.8.4
