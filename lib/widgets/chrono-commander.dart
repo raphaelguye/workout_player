@@ -31,8 +31,13 @@ class ChronoCommander extends StatelessWidget {
                   return snapshot.data == null
                       ? new Text('-',
                           style: TextStyle(fontSize: 30, color: Colors.white))
-                      : new Text('${(snapshot.data as Chrono).name}',
-                          style: TextStyle(fontSize: 30, color: Colors.white));
+                      : new Flexible(
+                          child: new Container(
+                              padding: new EdgeInsets.all(20),
+                              child: new Text(
+                                  '${(snapshot.data as Chrono).name}',
+                                  style: TextStyle(
+                                      fontSize: 30, color: Colors.white))));
                 }),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

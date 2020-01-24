@@ -97,7 +97,8 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                                   ? 'Fin de la série'
                                   : 'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
                             }
-                            return new Text(title, style: textStyle);
+                            return new Flexible(
+                                child: Text(title, style: textStyle));
                           }),
                       Row(
                         children: <Widget>[
