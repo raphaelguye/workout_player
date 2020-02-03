@@ -54,6 +54,25 @@ class _ChronoViewerState extends State<ChronoViewer> {
                   child: Container(
                     color: Colors.transparent,
                     padding: EdgeInsets.all(buttonIconMargin),
+                    child: Icon(Icons.all_inclusive,
+                        size: buttonIconHeight,
+                        color: _workoutBloc.isRestartPlaylistEnabled
+                            ? (Theme.of(context).primaryColor
+                                as MaterialColor)[800]
+                            : (Theme.of(context).primaryColor
+                                as MaterialColor)[400]),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _workoutBloc.isRestartPlaylistEnabled =
+                          !_workoutBloc.isRestartPlaylistEnabled;
+                    });
+                  },
+                ),
+                GestureDetector(
+                  child: Container(
+                    color: Colors.transparent,
+                    padding: EdgeInsets.all(buttonIconMargin),
                     child: Icon(Icons.playlist_play,
                         size: buttonIconHeight,
                         color: _workoutBloc.isAutoPlayEnabled

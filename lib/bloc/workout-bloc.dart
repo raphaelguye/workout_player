@@ -19,6 +19,7 @@ class WorkoutBloc {
 
   bool isVibrateEnabled = true;
   bool isAutoPlayEnabled = true;
+  bool isRestartPlaylistEnabled = true;
 
   WorkoutBloc(this._repository, this._profileLoader) {
     _currentChronoSubject = new BehaviorSubject<Chrono>.seeded(this._chrono);
@@ -69,14 +70,12 @@ class WorkoutBloc {
             Vibrate.vibrate();
           }
 
-          if (isAutoPlayEnabled) {
-            await Future.delayed(Duration(
-                seconds: 1)); // Wait 1 sec before starting the next Chrono
-            next();
-          } else {
+          if (!isAutoPlayEnabled) {
             isChronoRunning = false;
-            next(); // Switch directly to the next Chrono without waiting 1 second more
           }
+          await Future.delayed(Duration(
+              seconds: 1)); // Wait 1 sec before starting the next Chrono
+          next();
         }
       }
     }
@@ -94,7 +93,7 @@ class WorkoutBloc {
   }
 
   void next() {
-    var newChrono = _repository.nextChrono(_originalChrono);
+    var newChrono = _repository.nextChrono(_originalChrono, isRestartPlaylistEnabled);
     selectedChrono = newChrono;
   }
 

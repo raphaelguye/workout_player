@@ -7,7 +7,7 @@ abstract class Repository {
   int get chronoLength;
   bool hasNext(Chrono chrono);
   bool hasPrevious(Chrono chrono);
-  Chrono nextChrono(Chrono chrono);
+  Chrono nextChrono(Chrono chrono, bool isRestartPlaylistEnabled);
   Chrono previousChrono(Chrono chrono);
   void clear();
 }
@@ -51,17 +51,25 @@ class RepositoryImplementation extends Repository {
     _chronos.clear();
   }
 
-  bool hasNext(Chrono chrono) => nextChrono(chrono) != null;
+  bool hasNext(Chrono chrono) => nextChrono(chrono, false) != null;
   bool hasPrevious(Chrono chrono) => previousChrono(chrono) != null;
 
-  Chrono nextChrono(Chrono chrono) {
+  Chrono nextChrono(Chrono chrono, bool isRestartPlaylistEnabled) {
     int numberOfChronosWithANext = chronoLength - 1;
+
+    Chrono newChrono;
     for (var i = 0; i < numberOfChronosWithANext; i++) {
       if (_chronos[i] == chrono) {
-        return _chronos[i + 1];
+        newChrono = _chronos[i + 1];
+        break;
       }
     }
-    return null;
+
+    if (newChrono == null && isRestartPlaylistEnabled) {
+      newChrono = _chronos[0];
+    }
+
+    return newChrono;
   }
 
   Chrono previousChrono(Chrono chrono) {
