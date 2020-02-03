@@ -92,7 +92,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                                   color: Colors.white);
                             } else {
                               var nextChrono =
-                                  _repository.nextChrono(selectedChrono);
+                                  _repository.nextChrono(selectedChrono, _workoutBloc.isRestartPlaylistEnabled);
                               title = nextChrono == null
                                   ? 'Fin de la série'
                                   : 'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
