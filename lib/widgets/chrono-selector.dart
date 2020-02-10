@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:workout_player/bloc/workout-bloc.dart';
 import 'package:workout_player/model/chrono.dart';
 import 'package:workout_player/model/profile-loader.dart';
@@ -40,7 +41,8 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   final Repository _repository;
   final double _timersContainerHeightOpened;
   final _chronoTitleTextController = TextEditingController();
-  final _chronoTimeTextController = TextEditingController();
+  int _chronoTimeMinutes = 0;
+  int _chronoTimeSeconds = 0;
 
   static const double _timersContainerHeightClosed = 90;
   double _timersContainerHeight = _timersContainerHeightClosed;
@@ -51,7 +53,6 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   @override
   void dispose() {
     _chronoTitleTextController.dispose();
-    _chronoTimeTextController.dispose();
     super.dispose();
   }
 
@@ -91,8 +92,9 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white);
                             } else {
-                              var nextChrono =
-                                  _repository.nextChrono(selectedChrono, _workoutBloc.isRestartPlaylistEnabled);
+                              var nextChrono = _repository.nextChrono(
+                                  selectedChrono,
+                                  _workoutBloc.isRestartPlaylistEnabled);
                               title = nextChrono == null
                                   ? 'Fin de la série'
                                   : 'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
@@ -138,7 +140,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                 child: Expanded(
                     child: ListView.builder(
                   padding: const EdgeInsets.all(0),
-                  itemCount: _repository.chronoLength,
+                  itemCount: _repository.numberOfChronos,
                   itemBuilder: _listViewItemBuilder,
                 )),
               ),
@@ -290,6 +292,9 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   }
 
   Future<void> _openNewChronoDialog() async {
+    _chronoTitleTextController.text =
+        'Exercice ${_workoutBloc.numberOfChronos + 1}';
+
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -299,21 +304,44 @@ class _ChronoSelectorState extends State<ChronoSelector> {
           content: SingleChildScrollView(
               child: Column(children: <Widget>[
             Container(
-              child: TextField(
-                  controller: _chronoTitleTextController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Intitulé')),
+              child: Row(children: <Widget>[
+                NumberPicker.integer(
+                  initialValue: _chronoTimeMinutes,
+                  minValue: 0,
+                  maxValue: 59,
+                  zeroPad: true,
+                  highlightSelectedValue: false,
+                  decoration: getNumberPickerBoxDecoration(),
+                  listViewWidth: 100,
+                  infiniteLoop: true,
+                  onChanged: (value) {
+                    _chronoTimeMinutes = value;
+                  },
+                ),
+                NumberPicker.integer(
+                  initialValue: _chronoTimeSeconds,
+                  minValue: 0,
+                  maxValue: 59,
+                  zeroPad: true,
+                  step: 5,
+                  highlightSelectedValue: false,
+                  decoration: getNumberPickerBoxDecoration(),
+                  listViewWidth: 100,
+                  infiniteLoop: true,
+                  onChanged: (value) {
+                    _chronoTimeSeconds = value;
+                  },
+                ),
+              ], mainAxisAlignment: MainAxisAlignment.center),
               padding: EdgeInsets.only(bottom: 8),
             ),
             Container(
               child: TextField(
-                controller: _chronoTimeTextController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Temps (mm:ss ou ss)"),
-              ),
+                  controller: _chronoTitleTextController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Titre')),
               padding: EdgeInsets.only(top: 8),
-            )
+            ),
           ])),
           actions: <Widget>[
             FlatButton(
@@ -325,27 +353,37 @@ class _ChronoSelectorState extends State<ChronoSelector> {
             FlatButton(
               child: Text('Add'),
               onPressed: () {
-                var rawName = _chronoTitleTextController.text;
-                var rawTime = _chronoTimeTextController.text;
-
-                if (rawName != null &&
-                    rawName != "" &&
-                    rawTime != null &&
-                    rawTime != "") {
-                  var newChrono = Chrono.fromRawData(rawName, rawTime);
-                  if (newChrono != null) {
-                    setState(() {
-                      _workoutBloc.addNewChrono(newChrono);
-                    });
-                  }
+                var title = _chronoTitleTextController.text ?? 'n/a';
+                var newChrono = new Chrono(
+                    name: title,
+                    minutes: _chronoTimeMinutes,
+                    seconds: _chronoTimeSeconds);
+                if (newChrono != null) {
+                  setState(() {
+                    _workoutBloc.addNewChrono(newChrono);
+                  });
                 }
-
                 Navigator.of(context).pop();
               },
             ),
           ],
         );
       },
+    );
+  }
+
+  BoxDecoration getNumberPickerBoxDecoration() {
+    return BoxDecoration(
+      border: Border(
+        top: BorderSide(
+          style: BorderStyle.solid,
+          color: Colors.indigo,
+        ),
+        bottom: BorderSide(
+          style: BorderStyle.solid,
+          color: Colors.indigo,
+        ),
+      ),
     );
   }
 }

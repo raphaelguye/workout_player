@@ -52,6 +52,8 @@ class WorkoutBloc {
     _selectedChrono = value;
   }
 
+  get numberOfChronos => _repository.numberOfChronos;
+
   Future<void> startChrono() async {
     if (_chrono == null) {
       return;
@@ -144,7 +146,7 @@ class WorkoutBloc {
     }
 
     selectedChrono =
-        _repository.chronoLength > 0 ? _repository.getChrono(0) : null;
+        _repository.numberOfChronos > 0 ? _repository.getChrono(0) : null;
   }
 
   void dispose() {
