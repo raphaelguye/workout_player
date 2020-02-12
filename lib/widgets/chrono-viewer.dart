@@ -29,7 +29,7 @@ class _ChronoViewerState extends State<ChronoViewer> {
       color: (Theme.of(context).primaryColor as MaterialColor)[200],
       child: Column(
         children: <Widget>[
-          Container(height: buttonIconHeight + 2 * buttonIconMargin),
+          Container(height: buttonIconHeight),
           Expanded(
             child: Align(
                 alignment: Alignment.center,

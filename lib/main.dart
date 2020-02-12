@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 new ChronoSelector(
                   workoutBloc: _workoutBloc,
                   repository: _repository,
-                  maxHeight: 250, //MediaQuery.of(context).size.height / 2.2,
+                  maxHeight: 350, //MediaQuery.of(context).size.height / 2.2,
                 ),
               ],
             ),
