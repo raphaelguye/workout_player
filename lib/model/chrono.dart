@@ -57,6 +57,10 @@ class Chrono {
   @override
   String toString() => "$name - $hoursMinutesFormatted";
 
+  bool isEqualTo(Chrono chrono) {
+    return chrono is Chrono && chrono.minutes == minutes && chrono.seconds == seconds;
+  }
+
   String get hoursMinutesFormatted =>
       "${this._formatter.format(minutes)}:${this._formatter.format(seconds)}";
 

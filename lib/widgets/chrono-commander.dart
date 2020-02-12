@@ -52,17 +52,6 @@ class ChronoCommander extends StatelessWidget {
                 StreamBuilder(
                     stream: _workoutBloc.isChronoRunningObservable,
                     builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                      return MaterialCircleButton(
-                          icon: Icons.replay,
-                          buttonDiameter: _buttonsSizeBig,
-                          color: Colors.white,
-                          iconColor: Colors.black,
-                          isDisabled: snapshot.data == true,
-                          onTap: () => _workoutBloc.reset());
-                    }),
-                StreamBuilder(
-                    stream: _workoutBloc.isChronoRunningObservable,
-                    builder: (context, AsyncSnapshot<dynamic> snapshot) {
                       return snapshot.data == true
                           ? MaterialCircleButton(
                               icon: Icons.pause,

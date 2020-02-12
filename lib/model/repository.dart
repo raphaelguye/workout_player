@@ -52,7 +52,7 @@ class RepositoryImplementation extends Repository {
   }
 
   bool hasNext(Chrono chrono) => nextChrono(chrono, false) != null;
-  bool hasPrevious(Chrono chrono) => previousChrono(chrono) != null;
+  bool hasPrevious(Chrono chrono) => chrono != _chronos[0];
 
   Chrono nextChrono(Chrono chrono, bool isRestartPlaylistEnabled) {
     int numberOfChronosWithANext = numberOfChronos - 1;
@@ -73,6 +73,9 @@ class RepositoryImplementation extends Repository {
   }
 
   Chrono previousChrono(Chrono chrono) {
+    if(!hasPrevious(chrono)) {
+      return _chronos[numberOfChronos-1];
+    }
     for (var i = 1; i < numberOfChronos; i++) {
       if (_chronos[i] == chrono) {
         return _chronos[i - 1];

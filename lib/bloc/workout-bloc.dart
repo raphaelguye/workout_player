@@ -62,7 +62,11 @@ class WorkoutBloc {
     Screen.keepOn(true);
     isChronoRunning = true;
     while (_chrono != null && !_chrono.isOver && isChronoRunning) {
+      var currentChrono = _chrono;
       await Future.delayed(Duration(seconds: 1));
+      if(currentChrono != _chrono) {
+        continue;
+      }
       if (isChronoRunning) {
         _chrono.decrease();
         _currentChronoSubject.sink.add(_chrono);
@@ -90,17 +94,18 @@ class WorkoutBloc {
     Screen.keepOn(false);
   }
 
-  void reset() {
-    selectedChrono = _originalChrono;
-  }
-
   void next() {
     var newChrono = _repository.nextChrono(_originalChrono, isRestartPlaylistEnabled);
     selectedChrono = newChrono;
   }
 
   void previous() {
-    var newChrono = _repository.previousChrono(_originalChrono);
+    var newChrono;
+    if(_originalChrono.isEqualTo(_chrono)) {
+      newChrono = _repository.previousChrono(_originalChrono);
+    } else {
+      newChrono = _originalChrono;
+    }
     selectedChrono = newChrono;
   }
 
