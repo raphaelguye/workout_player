@@ -332,7 +332,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                     _chronoTimeSeconds = value;
                   },
                 ),
-              ], mainAxisAlignment: MainAxisAlignment.center),
+              ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
               padding: EdgeInsets.only(bottom: 8),
             ),
             Container(
