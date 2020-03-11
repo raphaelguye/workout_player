@@ -48,6 +48,7 @@ class ChronoCommander extends StatelessWidget {
                     color: Colors.white,
                     iconColor: Colors.black,
                     isDisabled: false,
+                    isVisible: true,
                     onTap: () => _workoutBloc.previous()),
                 StreamBuilder(
                     stream: _workoutBloc.isChronoRunningObservable,
@@ -59,6 +60,7 @@ class ChronoCommander extends StatelessWidget {
                               color: Colors.white,
                               iconColor: Colors.black,
                               isDisabled: false,
+                              isVisible: true,
                               onTap: () => _workoutBloc.pauseChrono(),
                             )
                           : MaterialCircleButton(
@@ -67,6 +69,7 @@ class ChronoCommander extends StatelessWidget {
                               color: Colors.white,
                               iconColor: Colors.black,
                               isDisabled: false,
+                              isVisible: true,
                               onTap: () => _workoutBloc.startChrono(),
                             );
                     }),
@@ -76,6 +79,7 @@ class ChronoCommander extends StatelessWidget {
                     color: Colors.white,
                     iconColor: Colors.black,
                     isDisabled: false,
+                    isVisible: true,
                     onTap: () => _workoutBloc.next()),
               ],
             )

@@ -112,6 +112,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             icon: Icons.library_books,
                             onTap: _openLoadProfileDialog,
                             isDisabled: false,
+                            isVisible: _isListTimersVisible,
                           ),
                           MaterialCircleButton(
                             buttonDiameter: 40,
@@ -121,6 +122,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             icon: Icons.add,
                             onTap: _openNewChronoDialog,
                             isDisabled: false,
+                            isVisible: _isListTimersVisible,
                           ),
                           MaterialCircleButton(
                             buttonDiameter: 40,
@@ -130,6 +132,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             icon: _openCloseIcon,
                             onTap: _openTimersList,
                             isDisabled: false,
+                            isVisible: true,
                           )
                         ],
                       ),

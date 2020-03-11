@@ -8,7 +8,8 @@ class MaterialCircleButton extends StatelessWidget {
       @required this.onTap,
       @required this.color,
       @required this.iconColor,
-      @required this.isDisabled})
+      @required this.isDisabled,
+      @required this.isVisible})
       : iconSize = buttonDiameter / 2;
 
   final IconData icon;
@@ -18,33 +19,41 @@ class MaterialCircleButton extends StatelessWidget {
   final Color color;
   final Color iconColor;
   final bool isDisabled;
+  final bool isVisible;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 10),
-      child: new SizedBox.fromSize(
-        size: Size(buttonDiameter, buttonDiameter), // button width and height
-        child: ClipOval(
-          child: Material(
-            color: isDisabled ?? false ? Colors.grey : color, // button color
-            child: InkWell(
-              splashColor: Colors.grey, // splash color
-              onTap: isDisabled ?? false ? () => {} : onTap, // button pressed
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(icon,
-                      size: iconSize,
-                      color: isDisabled ?? false
-                          ? Colors.grey[800]
-                          : iconColor), // icon
-                ],
+    if (!isVisible) {
+      return Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10),
+        height: buttonDiameter,
+      );
+    } else {
+      return Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10),
+        child: new SizedBox.fromSize(
+          size: Size(buttonDiameter, buttonDiameter), // button width and height
+          child: ClipOval(
+            child: Material(
+              color: isDisabled ?? false ? Colors.grey : color, // button color
+              child: InkWell(
+                splashColor: Colors.grey, // splash color
+                onTap: isDisabled ?? false ? () => {} : onTap, // button pressed
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(icon,
+                        size: iconSize,
+                        color: isDisabled ?? false
+                            ? Colors.grey[800]
+                            : iconColor), // icon
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
