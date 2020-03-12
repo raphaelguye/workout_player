@@ -86,9 +86,9 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             if (selectedChrono == null) {
                               title = 'Sélectionnez la suite...';
                             } else if (_isListTimersVisible) {
-                              title = 'À suivre';
+                              title = 'My Workout';
                               textStyle = TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white);
                             } else {
@@ -99,8 +99,21 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                                   ? 'Fin de la série'
                                   : 'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
                             }
-                            return new Flexible(
-                                child: Text(title, style: textStyle));
+                            return Row(
+                              children: <Widget>[
+                                Text(title, style: textStyle),
+                                MaterialCircleButton(
+                                  buttonDiameter: 40,
+                                  color: (Theme.of(context).primaryColor
+                                      as MaterialColor)[800],
+                                  iconColor: Colors.white,
+                                  icon: Icons.save,
+                                  onTap: _saveWorkout,
+                                  isDisabled: false,
+                                  isVisible: _isListTimersVisible,
+                                ),
+                              ],
+                            );
                           }),
                       Row(
                         children: <Widget>[
@@ -236,6 +249,10 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                   child: Text(_repository.getChrono(index).toString(),
                       style: TextStyle(color: Colors.white))));
         });
+  }
+
+  void _saveWorkout() {
+    print("saveWorkout");
   }
 
   void _openTimersList() {
