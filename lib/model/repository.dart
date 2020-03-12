@@ -5,6 +5,7 @@ abstract class Repository {
   bool addChrono(Chrono chrono);
   bool removeChrono(Chrono chrono);
   int get numberOfChronos;
+  List<Chrono> get allChronos;
   bool hasNext(Chrono chrono);
   bool hasPrevious(Chrono chrono);
   Chrono nextChrono(Chrono chrono, bool isRestartPlaylistEnabled);
@@ -85,4 +86,5 @@ class RepositoryImplementation extends Repository {
   }
 
   int get numberOfChronos => _chronos.length;
+  List<Chrono> get allChronos => _chronos;
 }

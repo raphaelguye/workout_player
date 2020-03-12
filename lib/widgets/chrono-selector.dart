@@ -309,7 +309,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   }
 
   Future<void> _openLoadProfileDialog() async {
-    var profileSelected = await showDialog<Profile>(
+    var profileSelected = await showDialog<ProfileOld>(
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
@@ -317,25 +317,25 @@ class _ChronoSelectorState extends State<ChronoSelector> {
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.pop(context, Profile.rock);
+                  Navigator.pop(context, ProfileOld.rock);
                 },
                 child: const Text("Rock'n'roll séries"),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.pop(context, Profile.fitness);
+                  Navigator.pop(context, ProfileOld.fitness);
                 },
                 child: const Text('Fitness répétitions'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.pop(context, Profile.extensivePhase);
+                  Navigator.pop(context, ProfileOld.extensivePhase);
                 },
                 child: const Text('Renforcement phase extensive'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.pop(context, Profile.empty);
+                  Navigator.pop(context, ProfileOld.empty);
                 },
                 child: const Text('Vide'),
               ),

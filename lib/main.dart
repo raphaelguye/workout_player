@@ -8,6 +8,8 @@ import 'package:workout_player/widgets/chrono-commander.dart';
 import 'package:workout_player/widgets/chrono-selector.dart';
 import 'package:workout_player/widgets/chrono-viewer.dart';
 
+import 'model/profile-repository.dart';
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -36,6 +38,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Repository _repository;
+  ProfileRepository _profileRepository;
   WorkoutBloc _workoutBloc;
   ProfileLoader _profileLoader;
 
@@ -43,8 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
+    _profileRepository = IoCManager.ioc.get<ProfileRepository>();
     _profileLoader = IoCManager.ioc.get<ProfileLoader>();
-    _workoutBloc = new WorkoutBloc(_repository, _profileLoader);
+    _workoutBloc = new WorkoutBloc(_repository, _profileRepository, _profileLoader);
   }
 
   @override

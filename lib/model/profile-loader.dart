@@ -3,7 +3,7 @@ import 'package:workout_player/model/repository.dart';
 import '../ioc-manager.dart';
 import 'chrono.dart';
 
-enum Profile { rock, fitness, extensivePhase, empty }
+enum ProfileOld { rock, fitness, extensivePhase, empty }
 
 abstract class ProfileLoader {
   loadRockProfile();
