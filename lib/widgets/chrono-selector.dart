@@ -41,6 +41,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   final Repository _repository;
   final double _timersContainerHeightOpened;
   final _chronoTitleTextController = TextEditingController();
+  final _workoutTitleTextController = TextEditingController();
   int _chronoTimeMinutes = 0;
   int _chronoTimeSeconds = 0;
 
@@ -253,6 +254,42 @@ class _ChronoSelectorState extends State<ChronoSelector> {
 
   void _saveWorkout() {
     print("saveWorkout");
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sauver votre profile'),
+          content: SingleChildScrollView(
+              child: Column(children: <Widget>[
+            Container(
+              child: TextField(
+                  controller: _workoutTitleTextController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Titre')),
+              padding: EdgeInsets.only(top: 8),
+            ),
+          ])),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Save'),
+              onPressed: () {
+                var title = _workoutTitleTextController.text ?? 'My Workout';
+                _workoutBloc.saveProfile(title);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _openTimersList() {
@@ -276,7 +313,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: const Text('Sélectionnez un profile à charger'),
+            title: const Text('Charger un profile'),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {

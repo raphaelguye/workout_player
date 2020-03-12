@@ -154,6 +154,10 @@ class WorkoutBloc {
         _repository.numberOfChronos > 0 ? _repository.getChrono(0) : null;
   }
 
+  void saveProfile(String title) {
+    print("save profile $title");
+  }
+
   void dispose() {
     _currentChronoSubject.close();
     _selectedChronoSubject.close();
