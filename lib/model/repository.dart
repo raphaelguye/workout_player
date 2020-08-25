@@ -3,6 +3,7 @@ import 'chrono.dart';
 abstract class Repository {
   Chrono getChrono(int index);
   bool addChrono(Chrono chrono);
+  void addChronos(List<Chrono> chronos);
   bool removeChrono(Chrono chrono);
   int get numberOfChronos;
   List<Chrono> get allChronos;
@@ -34,6 +35,12 @@ class RepositoryImplementation extends Repository {
     } catch (exception) {
       print(exception);
       return false;
+    }
+  }
+
+  void addChronos(List<Chrono> chronos) {
+    for(var chrono in chronos) {
+      this.addChrono(chrono);
     }
   }
 

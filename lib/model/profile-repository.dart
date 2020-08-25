@@ -1,3 +1,4 @@
+import 'package:workout_player/model/profile-loader.dart';
 import 'package:workout_player/model/profile.dart';
 
 abstract class ProfileRepository {
@@ -7,17 +8,38 @@ abstract class ProfileRepository {
 }
 
 class ProfileRepositoryImplementation extends ProfileRepository {
-  ProfileRepositoryImplementation();
+  final ProfileLoader _profileLoader;
+  List<Profile> _profiles;
+
+  ProfileRepositoryImplementation(this._profileLoader) {
+    _profiles = new List<Profile>();
+    _profiles.add(
+        new Profile(chronos: _profileLoader.loadRockProfile(), title: "Rock"));
+    _profiles.add(new Profile(
+        chronos: _profileLoader.loadExtensivePhaseProfile(),
+        title: "Phase extensive"));
+    _profiles.add(
+        new Profile(chronos: _profileLoader.loadEmptyProfile(), title: "Vide"));
+  }
 
   List<Profile> all() {
-    return new List<Profile>();
+    return _profiles;
   }
 
   bool saveProfile(Profile profile) {
-    return false;
+    try {
+      _profiles.add(profile);
+      return true;
+    } catch (exception) {
+      print(exception);
+      return false;
+    }
   }
 
   Profile loadProfile(String title) {
+    if (_profiles.length > 0) {
+      return _profiles.first; // TODO: Implement correctly
+    }
     return null;
   }
 }

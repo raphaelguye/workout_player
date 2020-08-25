@@ -8,7 +8,7 @@ class IoCManager {
 
   static void setup() {
     ioc.registerSingleton<Repository>(new RepositoryImplementation());
-    ioc.registerSingleton<ProfileRepository>(new ProfileRepositoryImplementation());
     ioc.registerSingleton<ProfileLoader>(new ProfileLoaderImplementation());
+    ioc.registerSingleton<ProfileRepository>(new ProfileRepositoryImplementation(IoCManager.ioc.get<ProfileLoader>()));
   }
 }

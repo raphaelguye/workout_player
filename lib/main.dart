@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:workout_player/bloc/workout-bloc.dart';
 import 'package:workout_player/ioc-manager.dart';
-import 'package:workout_player/model/profile-loader.dart';
 import 'package:workout_player/model/repository.dart';
 import 'package:workout_player/widgets/chrono-commander.dart';
 import 'package:workout_player/widgets/chrono-selector.dart';
@@ -40,15 +39,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Repository _repository;
   ProfileRepository _profileRepository;
   WorkoutBloc _workoutBloc;
-  ProfileLoader _profileLoader;
 
   static const double _buttonsSizeBig = 70;
 
   _MyHomePageState() {
     _repository = IoCManager.ioc.get<Repository>();
     _profileRepository = IoCManager.ioc.get<ProfileRepository>();
-    _profileLoader = IoCManager.ioc.get<ProfileLoader>();
-    _workoutBloc = new WorkoutBloc(_repository, _profileRepository, _profileLoader);
+    _workoutBloc = new WorkoutBloc(_repository, _profileRepository);
   }
 
   @override
@@ -68,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 new ChronoSelector(
                   workoutBloc: _workoutBloc,
                   repository: _repository,
+                  profileRepository: _profileRepository,
                   maxHeight: 350, //MediaQuery.of(context).size.height / 2.2,
                 ),
               ],

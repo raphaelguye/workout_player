@@ -3,7 +3,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:screen/screen.dart';
 import 'package:vibrate/vibrate.dart';
 import 'package:workout_player/model/chrono.dart';
-import 'package:workout_player/model/profile-loader.dart';
 import 'package:workout_player/model/profile-repository.dart';
 import 'package:workout_player/model/profile.dart';
 import 'package:workout_player/model/repository.dart';
@@ -11,7 +10,6 @@ import 'package:workout_player/model/repository.dart';
 class WorkoutBloc {
   final Repository _repository;
   final ProfileRepository _profileRepository;
-  final ProfileLoader _profileLoader;
   Chrono _originalChrono;
   Chrono _chrono;
   Chrono _selectedChrono;
@@ -24,7 +22,7 @@ class WorkoutBloc {
   bool isAutoPlayEnabled = true;
   bool isRestartPlaylistEnabled = true;
 
-  WorkoutBloc(this._repository, this._profileRepository, this._profileLoader) {
+  WorkoutBloc(this._repository, this._profileRepository) {
     _currentChronoSubject = new BehaviorSubject<Chrono>.seeded(this._chrono);
     _selectedChronoSubject =
         new BehaviorSubject<Chrono>.seeded(this._originalChrono);
@@ -67,7 +65,7 @@ class WorkoutBloc {
     while (_chrono != null && !_chrono.isOver && isChronoRunning) {
       var currentChrono = _chrono;
       await Future.delayed(Duration(seconds: 1));
-      if(currentChrono != _chrono) {
+      if (currentChrono != _chrono) {
         continue;
       }
       if (isChronoRunning) {
@@ -98,13 +96,14 @@ class WorkoutBloc {
   }
 
   void next() {
-    var newChrono = _repository.nextChrono(_originalChrono, isRestartPlaylistEnabled);
+    var newChrono =
+        _repository.nextChrono(_originalChrono, isRestartPlaylistEnabled);
     selectedChrono = newChrono;
   }
 
   void previous() {
     var newChrono;
-    if(_originalChrono.isEqualTo(_chrono)) {
+    if (_originalChrono.isEqualTo(_chrono)) {
       newChrono = _repository.previousChrono(_originalChrono);
     } else {
       newChrono = _originalChrono;
@@ -133,33 +132,20 @@ class WorkoutBloc {
     }
   }
 
-  void loadProfile(ProfileOld profile) {
-    switch (profile) {
-      case ProfileOld.rock:
-        print('rock profile choosen');
-        _profileLoader.loadRockProfile();
-        break;
-      case ProfileOld.fitness:
-        print('fitness profile choosen');
-        _profileLoader.loadFitnessProfile();
-        break;
-      case ProfileOld.extensivePhase:
-        print('extensive phase profile choosen');
-        _profileLoader.loadExtensivePhaseProfile();
-        break;
-      case ProfileOld.empty:
-        print('empty profile choosen');
-        _profileLoader.loadEmptyProfile();
-        break;
-    }
+  void loadProfile(String profileTitle) {
+    var profile = _profileRepository.loadProfile(profileTitle);
+    print('profile loaded: ${profile.title}');
 
+    _repository.clear();
+    _repository.addChronos(profile.chronos);
     selectedChrono =
         _repository.numberOfChronos > 0 ? _repository.getChrono(0) : null;
   }
 
   void saveProfile(String title) {
     print("save profile $title");
-    Profile profile = new Profile(title: title, chronos: _repository.allChronos);
+    Profile profile =
+        new Profile(title: title, chronos: _repository.allChronos);
     _profileRepository.saveProfile(profile);
   }
 

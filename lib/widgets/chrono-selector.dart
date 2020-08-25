@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:workout_player/bloc/workout-bloc.dart';
 import 'package:workout_player/model/chrono.dart';
-import 'package:workout_player/model/profile-loader.dart';
+import 'package:workout_player/model/profile-repository.dart';
 import 'package:workout_player/model/repository.dart';
 import 'package:workout_player/shared/material-circle-button.dart';
 
@@ -11,20 +11,24 @@ class ChronoSelector extends StatefulWidget {
       {Key key,
       @required WorkoutBloc workoutBloc,
       @required Repository repository,
+      @required ProfileRepository profileRepository,
       @required double maxHeight})
       : _workoutBloc = workoutBloc,
         _repository = repository,
+        _profileRepository = profileRepository,
         _maxHeight = maxHeight,
         super(key: key);
 
   final WorkoutBloc _workoutBloc;
   final Repository _repository;
+  final ProfileRepository _profileRepository;
   final double _maxHeight;
 
   @override
   _ChronoSelectorState createState() => _ChronoSelectorState(
       workoutBloc: _workoutBloc,
       repository: _repository,
+      profileRepository: _profileRepository,
       maxHeight: _maxHeight);
 }
 
@@ -32,13 +36,16 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   _ChronoSelectorState(
       {@required WorkoutBloc workoutBloc,
       @required Repository repository,
+      @required ProfileRepository profileRepository,
       @required double maxHeight})
       : _workoutBloc = workoutBloc,
         _repository = repository,
+        _profileRepository = profileRepository,
         _timersContainerHeightOpened = maxHeight;
 
   final WorkoutBloc _workoutBloc;
   final Repository _repository;
+  final ProfileRepository _profileRepository;
   final double _timersContainerHeightOpened;
   final _chronoTitleTextController = TextEditingController();
   final _workoutTitleTextController = TextEditingController();
@@ -309,43 +316,31 @@ class _ChronoSelectorState extends State<ChronoSelector> {
   }
 
   Future<void> _openLoadProfileDialog() async {
-    var profileSelected = await showDialog<ProfileOld>(
+    var profileTitleSelected = await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
             title: const Text('Charger un profile'),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, ProfileOld.rock);
-                },
-                child: const Text("Rock'n'roll séries"),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, ProfileOld.fitness);
-                },
-                child: const Text('Fitness répétitions'),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, ProfileOld.extensivePhase);
-                },
-                child: const Text('Renforcement phase extensive'),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, ProfileOld.empty);
-                },
-                child: const Text('Vide'),
-              ),
-            ],
+            children: _profileDialogOptions()
           );
         });
-
     setState(() {
-      _workoutBloc.loadProfile(profileSelected);
+      _workoutBloc.loadProfile(profileTitleSelected);
     });
+  }
+
+  List<SimpleDialogOption> _profileDialogOptions() {
+    var dialogOptions = new List<SimpleDialogOption>();
+    for (var profile in _profileRepository.all()) {
+      var dialogOption = new SimpleDialogOption(
+        onPressed: () {
+          Navigator.pop(context, profile.title);
+        },
+        child: Text(profile.title),
+      );
+      dialogOptions.add(dialogOption);
+    }
+    return dialogOptions;
   }
 
   Future<void> _openNewChronoDialog() async {
