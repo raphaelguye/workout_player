@@ -150,7 +150,8 @@ class WorkoutBloc {
     Profile profile =
         new Profile(title: title, chronos: _repository.cloneOfAllChronos);
     _profileRepository.saveProfile(profile);
-    _currentProfile = profile;
+    
+    this.loadProfile(title);
   }
 
   void dispose() {
