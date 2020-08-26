@@ -38,7 +38,10 @@ class ProfileRepositoryImplementation extends ProfileRepository {
 
   Profile loadProfile(String title) {
     if (_profiles.length > 0) {
-      return _profiles.first; // TODO: Implement correctly
+      var result = _profiles.where((p) => p.title == title);
+      if (result.length > 0) {
+        return result.first;
+      }
     }
     return null;
   }

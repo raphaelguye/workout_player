@@ -13,6 +13,7 @@ class WorkoutBloc {
   Chrono _originalChrono;
   Chrono _chrono;
   Chrono _selectedChrono;
+  Profile _currentProfile;
   bool _isChronoRunning = false;
   BehaviorSubject<Chrono> _currentChronoSubject;
   BehaviorSubject<Chrono> _selectedChronoSubject;
@@ -54,6 +55,8 @@ class WorkoutBloc {
   }
 
   get numberOfChronos => _repository.numberOfChronos;
+
+  get profileTitle => _currentProfile.title ?? "My Workout";
 
   Future<void> startChrono() async {
     if (_chrono == null) {
@@ -133,11 +136,11 @@ class WorkoutBloc {
   }
 
   void loadProfile(String profileTitle) {
-    var profile = _profileRepository.loadProfile(profileTitle);
-    print('profile loaded: ${profile.title}');
+    _currentProfile = _profileRepository.loadProfile(profileTitle);
+    print('profile loaded: ${_currentProfile.title}');
 
     _repository.clear();
-    _repository.addChronos(profile.chronos);
+    _repository.addChronos(_currentProfile?.chronos);
     selectedChrono =
         _repository.numberOfChronos > 0 ? _repository.getChrono(0) : null;
   }

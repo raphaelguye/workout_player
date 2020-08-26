@@ -94,7 +94,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             if (selectedChrono == null) {
                               title = 'Sélectionnez la suite...';
                             } else if (_isListTimersVisible) {
-                              title = 'My Workout';
+                              title = _workoutBloc.profileTitle;
                               textStyle = TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,

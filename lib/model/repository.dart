@@ -39,7 +39,10 @@ class RepositoryImplementation extends Repository {
   }
 
   void addChronos(List<Chrono> chronos) {
-    for(var chrono in chronos) {
+    if (chronos == null) {
+      return;
+    }
+    for (var chrono in chronos) {
       this.addChrono(chrono);
     }
   }
@@ -81,8 +84,8 @@ class RepositoryImplementation extends Repository {
   }
 
   Chrono previousChrono(Chrono chrono) {
-    if(!hasPrevious(chrono)) {
-      return _chronos[numberOfChronos-1];
+    if (!hasPrevious(chrono)) {
+      return _chronos[numberOfChronos - 1];
     }
     for (var i = 1; i < numberOfChronos; i++) {
       if (_chronos[i] == chrono) {
