@@ -56,7 +56,7 @@ class WorkoutBloc {
 
   get numberOfChronos => _repository.numberOfChronos;
 
-  get profileTitle => _currentProfile.title ?? "My Workout";
+  get profileTitle => _currentProfile?.title ?? "My Workout";
 
   Future<void> startChrono() async {
     if (_chrono == null) {
@@ -148,8 +148,9 @@ class WorkoutBloc {
   void saveProfile(String title) {
     print("save profile $title");
     Profile profile =
-        new Profile(title: title, chronos: _repository.allChronos);
+        new Profile(title: title, chronos: _repository.cloneOfAllChronos);
     _profileRepository.saveProfile(profile);
+    _currentProfile = profile;
   }
 
   void dispose() {

@@ -7,6 +7,7 @@ abstract class Repository {
   bool removeChrono(Chrono chrono);
   int get numberOfChronos;
   List<Chrono> get allChronos;
+  List<Chrono> get cloneOfAllChronos;
   bool hasNext(Chrono chrono);
   bool hasPrevious(Chrono chrono);
   Chrono nextChrono(Chrono chrono, bool isRestartPlaylistEnabled);
@@ -96,5 +97,14 @@ class RepositoryImplementation extends Repository {
   }
 
   int get numberOfChronos => _chronos.length;
+
   List<Chrono> get allChronos => _chronos;
+
+  List<Chrono> get cloneOfAllChronos {
+    List<Chrono> clone = new List<Chrono>();
+    _chronos.forEach((c) {
+      clone.add(c);
+    });
+    return clone;
+  }
 }
