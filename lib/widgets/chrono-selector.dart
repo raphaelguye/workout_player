@@ -84,9 +84,9 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                             var title = '';
 
                             if (selectedChrono == null) {
-                              title = 'Sélectionnez la suite...';
+                              title = 'Next...';
                             } else if (_isListTimersVisible) {
-                              title = 'À suivre';
+                              title = 'Next';
                               textStyle = TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -96,8 +96,8 @@ class _ChronoSelectorState extends State<ChronoSelector> {
                                   selectedChrono,
                                   _workoutBloc.isRestartPlaylistEnabled);
                               title = nextChrono == null
-                                  ? 'Fin de la série'
-                                  : 'À suivre : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
+                                  ? 'End of the workout'
+                                  : 'Next : ${nextChrono.name} (${nextChrono.hoursMinutesFormatted})';
                             }
                             return new Flexible(
                                 child: Text(title, style: textStyle));
@@ -256,31 +256,31 @@ class _ChronoSelectorState extends State<ChronoSelector> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: const Text('Sélectionnez un profile à charger'),
+            title: const Text('Load a profile'),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Profile.rock);
                 },
-                child: const Text("Rock'n'roll séries"),
+                child: const Text("Rock"),
               ),
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Profile.fitness);
                 },
-                child: const Text('Fitness répétitions'),
+                child: const Text('Fitness'),
               ),
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Profile.extensivePhase);
                 },
-                child: const Text('Renforcement phase extensive'),
+                child: const Text('Extensive phase'),
               ),
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Profile.empty);
                 },
-                child: const Text('Vide'),
+                child: const Text('Empty'),
               ),
             ],
           );
@@ -300,7 +300,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Ajouter un nouveau chrono'),
+          title: Text('Add a chrono'),
           content: SingleChildScrollView(
               child: Column(children: <Widget>[
             Container(
@@ -339,7 +339,7 @@ class _ChronoSelectorState extends State<ChronoSelector> {
               child: TextField(
                   controller: _chronoTitleTextController,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Titre')),
+                      border: OutlineInputBorder(), labelText: 'Title')),
               padding: EdgeInsets.only(top: 8),
             ),
           ])),

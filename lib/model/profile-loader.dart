@@ -23,42 +23,42 @@ class ProfileLoaderImplementation extends ProfileLoader {
   loadRockProfile() {
     _repository.clear();
     _repository.addChrono(
-        new Chrono(name: 'Programme - partie 1', minutes: 0, seconds: 30));
+        new Chrono(name: 'Routine - part 1', minutes: 0, seconds: 30));
     _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
+        .addChrono(new Chrono(name: 'Recovery', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Programme - partie 2', minutes: 0, seconds: 30));
+        new Chrono(name: 'Routine - part 2', minutes: 0, seconds: 30));
     _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
+        .addChrono(new Chrono(name: 'Recovery', minutes: 0, seconds: 45));
     _repository.addChrono(
-        new Chrono(name: 'Programme - partie 3', minutes: 0, seconds: 30));
+        new Chrono(name: 'Routine - part 3', minutes: 0, seconds: 30));
     _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 0, seconds: 45));
+        .addChrono(new Chrono(name: 'Recovery', minutes: 0, seconds: 45));
   }
 
   @override
   loadFitnessProfile() {
     _repository.clear();
-    _repository.addChrono(new Chrono(name: 'Série 1', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Routine 1', minutes: 0, seconds: 30));
     _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 1, seconds: 0));
-    _repository.addChrono(new Chrono(name: 'Série 2', minutes: 0, seconds: 30));
+        .addChrono(new Chrono(name: 'Recovery', minutes: 1, seconds: 0));
+    _repository.addChrono(new Chrono(name: 'Routine 2', minutes: 0, seconds: 30));
     _repository
-        .addChrono(new Chrono(name: 'Récupération', minutes: 1, seconds: 0));
-    _repository.addChrono(new Chrono(name: 'Série 3', minutes: 0, seconds: 30));
+        .addChrono(new Chrono(name: 'Recovery', minutes: 1, seconds: 0));
+    _repository.addChrono(new Chrono(name: 'Routine 3', minutes: 0, seconds: 30));
     _repository
-        .addChrono(new Chrono(name: 'Changement d\'exercice', minutes: 2, seconds: 0));
+        .addChrono(new Chrono(name: 'Go to the next exercice', minutes: 2, seconds: 0));
   }
 
   @override
   loadExtensivePhaseProfile() {
     _repository.clear();
-    _repository.addChrono(new Chrono(name: 'Filles: 1ère partie', minutes: 0, seconds: 30));
-    _repository.addChrono(new Chrono(name: 'Filles: 2ème partie', minutes: 0, seconds: 30));
-    _repository.addChrono(new Chrono(name: 'Chang. filles -> garçons', minutes: 0, seconds: 15));
-    _repository.addChrono(new Chrono(name: 'Garçons: 1ère partie', minutes: 0, seconds: 30));
-    _repository.addChrono(new Chrono(name: 'Garçons: 2ème partie', minutes: 0, seconds: 30));
-    _repository.addChrono(new Chrono(name: 'Changement d\'exercice', minutes: 0, seconds: 15));
+    _repository.addChrono(new Chrono(name: 'Group 1:  part 1', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Group 1: part 2', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'group1 -> group2', minutes: 0, seconds: 15));
+    _repository.addChrono(new Chrono(name: 'Group 2:  part 1', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Group 2: part 2', minutes: 0, seconds: 30));
+    _repository.addChrono(new Chrono(name: 'Go to the next exercice', minutes: 0, seconds: 15));
   }
 
   @override
