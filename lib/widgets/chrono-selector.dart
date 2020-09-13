@@ -278,6 +278,12 @@ class _ChronoSelectorState extends State<ChronoSelector> {
               ),
               SimpleDialogOption(
                 onPressed: () {
+                  Navigator.pop(context, Profile.afBlocs);
+                },
+                child: const Text('AF blocs'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
                   Navigator.pop(context, Profile.empty);
                 },
                 child: const Text('Empty'),

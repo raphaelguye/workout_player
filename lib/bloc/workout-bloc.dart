@@ -64,7 +64,7 @@ class WorkoutBloc {
     while (_chrono != null && !_chrono.isOver && isChronoRunning) {
       var currentChrono = _chrono;
       await Future.delayed(Duration(seconds: 1));
-      if(currentChrono != _chrono) {
+      if (currentChrono != _chrono) {
         continue;
       }
       if (isChronoRunning) {
@@ -95,13 +95,14 @@ class WorkoutBloc {
   }
 
   void next() {
-    var newChrono = _repository.nextChrono(_originalChrono, isRestartPlaylistEnabled);
+    var newChrono =
+        _repository.nextChrono(_originalChrono, isRestartPlaylistEnabled);
     selectedChrono = newChrono;
   }
 
   void previous() {
     var newChrono;
-    if(_originalChrono.isEqualTo(_chrono)) {
+    if (_originalChrono.isEqualTo(_chrono)) {
       newChrono = _repository.previousChrono(_originalChrono);
     } else {
       newChrono = _originalChrono;
@@ -147,6 +148,10 @@ class WorkoutBloc {
       case Profile.empty:
         print('empty profile choosen');
         _profileLoader.loadEmptyProfile();
+        break;
+      case Profile.afBlocs:
+        print('af profile choosen');
+        _profileLoader.loadAFBlocProfile();
         break;
     }
 
